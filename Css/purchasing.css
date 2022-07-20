@@ -1,0 +1,20 @@
+input{
+  width: 300px;
+  height: 30px;
+  font-size: 18px;
+}
+h2{
+  color: rgb(70, 70, 70);
+}
+
+button{
+  width: 150px;
+  line-height: 40px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+}
+
+footer{
+  margin-top: 30px;
+}
