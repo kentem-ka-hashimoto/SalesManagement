@@ -5,9 +5,95 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../Css/main.css" />
-    <title>Document</title>
+    <title>販売管理システム</title>
   </head>
   <body>
+    <header>
+      <button>仕入処理</button>
+      <button>販売処理</button>
+      <button>在庫一覧</button>
+      <div id="total">
+        <h2>売上合計金額 : 104,000円</h2>
+        <h2>利益合計金額 : 60,000円</h2>
+      </div>
+    </header>
+    <main>
+      <section>
+        <h2>＜販売状況＞</h2>
+        <div id="btnArea">
+          <button>絞り込み</button>
+          <button>今日の販売</button>
+          <button>削除</button>
+        </div>
+      </section>
+      <table>
+        <thead>
+          <tr>
+            <th>選択</th>
+            <th>商品名</th>
+            <th>販売価格</th>
+            <th>仕入価格</th>
+            <th>仕入日</th>
+            <th>販売日</th>
+            <th>販売数</th>
+            <th>売上</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class='check'><input type="checkbox" /></td>
+            <td>桃</td>
+            <td>400円</td>
+            <td>200円</td>
+            <td>2022-07-19</td>
+            <td>2022-07-21</td>
+            <td>200個</td>
+            <td>80,000円</td>
+          </tr>
+
+          <tr>
+            <td class='check'><input type="checkbox" /></td>
+            <td>お茶</td>
+            <td>150円</td>
+            <td>60円</td>
+            <td>2022-07-21</td>
+            <td>2022-07-24</td>
+            <td>160個</td>
+            <td>24,000円</td>
+          </tr>
+          <tr>
+            <td class='check'><input type="checkbox" /></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class='check'><input type="checkbox" /></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class='check'><input type="checkbox" /></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
     <script type="module" src="../wwwroot/js/Views/main.js"></script>
   </body>
 </html>

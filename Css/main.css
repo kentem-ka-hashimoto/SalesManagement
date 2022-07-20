@@ -1,0 +1,51 @@
+ button{
+  width: 150px;
+  line-height: 40px;
+  cursor: pointer;
+  user-select: none;
+}
+
+div#total{
+  display: flex;
+}
+
+h2+h2{
+  margin-left: 50px;
+}
+
+main section{
+  display: flex;
+  align-items: center;
+}
+
+table {
+  margin: 10px 0;
+  width: 100%;
+  border-collapse: collapse;
+  background: rgb(100, 230, 230, 0.1);
+}
+
+th {
+  height: 60px;
+  color: rgb(100, 230, 230);
+  border-bottom: 5px solid rgb(100, 230, 230, 0.8);
+}
+
+tr:nth-child(even){
+  background: rgba(236, 236, 236, 0.8);
+}
+
+th+th,
+td+td{
+  border-left: 1px solid rgba(10, 70, 70, 0.1)
+}
+
+td {
+  height: 60px;
+  border-bottom: 1px solid black;
+}
+
+td.check{
+  text-align: center;
+  width: 50px;
+}
