@@ -13,3 +13,5 @@ saleBtn.addEventListener('click', () => {
 stockListBtn.addEventListener('click', () => {
   window.open('stockList.html', '_blank');
 });
+
+console.log(localStorage.getItem('stock'));

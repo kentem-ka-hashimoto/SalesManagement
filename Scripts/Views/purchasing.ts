@@ -1,3 +1,6 @@
+import { Product } from '../Models/product.js';
+import { Global } from '../Models/global.js';
+
 {
   // 商品名の取得
   const productName = document.getElementById('productName') as HTMLInputElement;
@@ -13,6 +16,20 @@
   const decisionBtn = document.getElementById('decision') as HTMLButtonElement;
   // 戻るボタンの取得
   const returnBtn = document.getElementById('return') as HTMLButtonElement;
+
+  // 決定ボタンの処理
+  decisionBtn.addEventListener('click', () => {
+    const product: Product = new Product(
+      productName.value,
+      Number(purchaseQuantity.value),
+      Number(prodpurchasePriceuctName.value),
+      Number(sellingPrice.value),
+      purchaseDate.value
+    );
+
+    Global.stockManager.add(product);
+    localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
+  });
 
   // 戻るボタンの処理
   returnBtn.addEventListener('click', () => {
