@@ -17,18 +17,21 @@ import { Global } from '../Models/global.js';
   // 戻るボタンの取得
   const returnBtn = document.getElementById('return') as HTMLButtonElement;
 
+  Global.getStockFromLocalStorage();
+
   // 決定ボタンの処理
   decisionBtn.addEventListener('click', () => {
     const product: Product = new Product(
       productName.value,
-      Number(purchaseQuantity.value),
+      purchaseDate.value,
       Number(prodpurchasePriceuctName.value),
       Number(sellingPrice.value),
-      purchaseDate.value
+      Number(purchaseQuantity.value)
     );
 
     Global.stockManager.add(product);
-    localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
+    console.log(Global.stockManager.stockArr);
+    window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
   });
 
   // 戻るボタンの処理

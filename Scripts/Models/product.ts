@@ -1,18 +1,16 @@
-
-
 export class Product {
   constructor(
     private _productName: string,
-    private _stock: number,
-    private _purchasingPrice: number,
+    private _purchaseDate: string,
+    private _purchasePrice: number,
     private _sellingPrice: number,
-    private _purchaseDate: string
+    private _stock: number
   ) {
     this._productName = _productName;
-    this._stock = _stock;
-    this._purchasingPrice = _purchasingPrice;
-    this._sellingPrice = _sellingPrice;
     this._purchaseDate = _purchaseDate;
+    this._purchasePrice = _purchasePrice;
+    this._sellingPrice = _sellingPrice;
+    this._stock = _stock;
   }
 
   public get productName(): string {
@@ -27,8 +25,8 @@ export class Product {
     this._stock = value;
   }
 
-  public get purchasingPrice(): number {
-    return this._purchasingPrice;
+  public get purchasePrice(): number {
+    return this._purchasePrice;
   }
 
   public get sellingPrice(): number {
