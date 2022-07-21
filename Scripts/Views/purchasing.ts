@@ -30,12 +30,12 @@ import { Global } from '../Models/global.js';
     );
 
     Global.stockManager.add(product);
-    console.log(Global.stockManager.stockArr);
     window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
+    window.location.href = 'Main.html';
   });
 
   // 戻るボタンの処理
   returnBtn.addEventListener('click', () => {
-    window.location.href = 'main.html';
+    window.location.href = 'Main.html';
   });
 }

@@ -6,11 +6,13 @@ const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
 // 閉じるボタンの取得
 const closeBtn = document.getElementById('close') as HTMLButtonElement;
 
+// 画面ロード時の処理
 window.onload = function () {
   deleteTbodyChildren();
   createStockList();
 };
 
+// ローカルストレージに変化があった場合の処理
 window.addEventListener('storage', (event) => {
   if (event.storageArea != localStorage) return;
   if (event.key === 'stock') {
