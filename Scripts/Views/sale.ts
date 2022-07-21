@@ -55,6 +55,7 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
       product: Global.stockManager.stockArr[index],
       saleDate: saleDate.value,
       saleQuantity: Number(saleQuantity.value),
+      selected:false
     };
     Global.saleManager.add(sale);
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));

@@ -47,6 +47,7 @@ export class Global {
           ),
           saleDate: target.saleDate,
           saleQuantity: target.saleQuantity,
+          selected: target.selected,
         };
         Global.saleManager.add(saledata);
       });

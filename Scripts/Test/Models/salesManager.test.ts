@@ -15,6 +15,7 @@ describe('SalesManagerTest', () => {
       product: new Product('桃', '2022-07-20', 200, 400, 200),
       saleDate: '2022-07-24',
       saleQuantity: 100,
+      selected: false,
     };
 
     expect(manager.salesArr.length).toBe(0);
@@ -35,6 +36,7 @@ describe('SalesManagerTest', () => {
       product: new Product('お茶', '2022-07-20', 60, 150, 600),
       saleDate: '2022-07-28',
       saleQuantity: 200,
+      selected: false,
     };
     manager.add(sale);
     expect(manager.salesArr.length).toBe(2);
