@@ -47,6 +47,7 @@ narrowingBtn.addEventListener('click', () => {
             createSalesStatusLine(target);
         }
     });
+    totalSales.textContent = `売上合計金額 : ${updateTotalSales()}円`;
 });
 // 今日の販売ボタンの処理
 todaySaleBtn.addEventListener('click', () => {
@@ -56,11 +57,13 @@ todaySaleBtn.addEventListener('click', () => {
             createSalesStatusLine(target);
         }
     });
+    totalSales.textContent = `売上合計金額 : ${updateTotalSales()}円`;
 });
 // 解除ボタンの処理
 lifttBtn.addEventListener('click', () => {
     createSalesStatusList();
     checks = document.getElementsByName('check');
+    totalSales.textContent = `売上合計金額 : ${updateTotalSales()}円`;
 });
 function createSalesStatusLine(target) {
     const tr = document.createElement('tr');
