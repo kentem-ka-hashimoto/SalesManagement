@@ -36,6 +36,7 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
 
   // 決定ボタンの処理
   decisionBtn.addEventListener('click', () => {
+    Global.getSalesStatusFromLocalStorage();
     // チェックのインデックス取得
     let index: number = 0;
     checks.forEach((check, checks_index) => {
@@ -53,6 +54,7 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
     const sale: Sales = {
       product: Global.stockManager.stockArr[index],
       saleDate: saleDate.value,
+      saleQuantity: Number(saleQuantity.value),
     };
     Global.saleManager.add(sale);
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));

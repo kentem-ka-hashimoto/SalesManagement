@@ -14,6 +14,7 @@ describe('SalesManagerTest', () => {
     let sale: Sales = {
       product: new Product('桃', '2022-07-20', 200, 400, 200),
       saleDate: '2022-07-24',
+      saleQuantity: 100,
     };
 
     expect(manager.salesArr.length).toBe(0);
@@ -27,11 +28,13 @@ describe('SalesManagerTest', () => {
     expect(manager.salesArr[0].product.sellingPrice).toBe(400);
     expect(manager.salesArr[0].product.stock).toBe(200);
     expect(manager.salesArr[0].saleDate).toBe('2022-07-24');
+    expect(manager.salesArr[0].saleQuantity).toBe(100);
 
     // 2つ目追加した際の確認
     sale = {
       product: new Product('お茶', '2022-07-20', 60, 150, 600),
       saleDate: '2022-07-28',
+      saleQuantity: 200,
     };
     manager.add(sale);
     expect(manager.salesArr.length).toBe(2);
@@ -41,5 +44,6 @@ describe('SalesManagerTest', () => {
     expect(manager.salesArr[1].product.sellingPrice).toBe(150);
     expect(manager.salesArr[1].product.stock).toBe(600);
     expect(manager.salesArr[1].saleDate).toBe('2022-07-28');
+    expect(manager.salesArr[1].saleQuantity).toBe(200);
   });
 });
