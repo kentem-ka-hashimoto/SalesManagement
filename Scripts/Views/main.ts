@@ -16,15 +16,34 @@ const narrowingBtn = document.getElementById('narrowing') as HTMLButtonElement;
 const todaySaleBtn = document.getElementById('todaySale') as HTMLButtonElement;
 // 解除ボタンの取得
 const lifttBtn = document.getElementById('lift') as HTMLButtonElement;
-
-Global.getSalesStatusFromLocalStorage();
-
+// 売上合計金額表示部分の取得
+const totalSales = document.getElementById('totalSales') as HTMLElement;
+// 利益合計金額表示部分の取得
+const totalProfit = document.getElementById('totalProfit') as HTMLElement;
 // チェックボックスの取得
 let checks: NodeListOf<HTMLInputElement>;
 
+Global.getSalesStatusFromLocalStorage();
+
+// 今日の日付を取得
+const date: Date = new Date();
+const today: string = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice(-2)}` + '-' + `${('00' + date.getDate()).slice(-2)}`;
+
+// 売上合計金額の取得
+function updateTotalSales(): string {
+  const tdEarnings: NodeListOf<Element> = document.querySelectorAll('td.Earnings');
+  let totalSales: number = 0;
+  tdEarnings.forEach((target) => {
+    totalSales += Number(target.textContent?.slice(0, target.textContent.length - 1));
+  });
+  return totalSales.toLocaleString();
+}
+
+// 画面ロード時の処理
 window.onload = function () {
   createSalesStatusList();
   checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
+  totalSales.textContent = `売上合計金額 : ${updateTotalSales()}円`;
 };
 
 // 絞込みボタンの処理
@@ -32,6 +51,16 @@ narrowingBtn.addEventListener('click', () => {
   deleteTbodyChildren();
   Global.saleManager.salesArr.forEach((target: Sales) => {
     if (target.selected) {
+      createSalesStatusLine(target);
+    }
+  });
+});
+
+// 今日の販売ボタンの処理
+todaySaleBtn.addEventListener('click', () => {
+  deleteTbodyChildren();
+  Global.saleManager.salesArr.forEach((target: Sales) => {
+    if (target.saleDate === today) {
       createSalesStatusLine(target);
     }
   });
@@ -74,6 +103,7 @@ function createSalesStatusLine(target: Sales): void {
   tdQuantity.textContent = `${target.saleQuantity}個`;
   const tdEarnings: HTMLTableCellElement = document.createElement('td');
   tdEarnings.textContent = `${target.product.sellingPrice * target.saleQuantity}円`;
+  tdEarnings.classList.add('Earnings');
 
   tr.appendChild(tdCheck);
   tr.appendChild(tdName);
@@ -125,6 +155,7 @@ function createSalesStatusList(): void {
     tdQuantity.textContent = `${target.saleQuantity}個`;
     const tdEarnings: HTMLTableCellElement = document.createElement('td');
     tdEarnings.textContent = `${target.product.sellingPrice * target.saleQuantity}円`;
+    tdEarnings.classList.add('Earnings');
 
     tr.appendChild(tdCheck);
     tr.appendChild(tdName);
