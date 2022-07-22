@@ -7,7 +7,7 @@ export class StockManager {
     return this._stockArr;
   }
 
-  add(product: Product): void {
+  public add(product: Product): void {
     this._stockArr.push(product);
   }
 }
