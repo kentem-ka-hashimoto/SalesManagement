@@ -11,7 +11,8 @@ export class SalesManager {
     this._salesArr.push(sale);
   }
 
-  getProductsFromDate(): Sales[]{
+  getProductsFromDate(today: string): Sales[]{
     return this._salesArr;
   }
+
 }
