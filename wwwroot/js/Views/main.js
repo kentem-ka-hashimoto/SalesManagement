@@ -20,52 +20,82 @@ const totalProfit = document.getElementById('totalProfit');
 // チェックボックスの取得
 let checks;
 Global.getSalesStatusFromLocalStorage();
+let salesArr = [];
 // 今日の日付を取得
 const date = new Date();
 const today = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice(-2)}` + '-' + `${('00' + date.getDate()).slice(-2)}`;
 // 画面ロード時の処理
 window.onload = function () {
-    createSalesStatusList();
+    createSalesStatusList(Global.saleManager.salesArr);
     checks = document.getElementsByName('check');
     updateTotalSalesAndTotalProfit();
 };
 // 絞込みボタンの処理
 narrowingBtn.addEventListener('click', () => {
-    deleteTbodyChildren();
-    Global.saleManager.removeAtCheck();
-    createSalesStatusList();
+    updateCheckStatus();
+    if (salesArr.length !== 0) {
+        for (let i = salesArr.length - 1; i >= 0; i--) {
+            if (!salesArr[i].selected) {
+                salesArr.splice(i, 1);
+            }
+        }
+    }
+    else {
+        Global.saleManager.salesArr.forEach((target) => {
+            if (target.selected) {
+                salesArr.push(target);
+            }
+        });
+    }
+    createSalesStatusList(salesArr);
     updateTotalSalesAndTotalProfit();
 });
 // 今日の販売ボタンの処理
 todaySaleBtn.addEventListener('click', () => {
-    deleteTbodyChildren();
-    Global.saleManager.removeAtToday(today);
-    createSalesStatusList();
+    updateCheckStatus();
+    if (salesArr.length !== 0) {
+        for (let i = salesArr.length - 1; i >= 0; i--) {
+            if (salesArr[i].saleDate !== today) {
+                salesArr.splice(i, 1);
+            }
+        }
+    }
+    else {
+        Global.saleManager.salesArr.forEach((target) => {
+            if (target.saleDate === today) {
+                salesArr.push(target);
+            }
+        });
+    }
+    createSalesStatusList(salesArr);
     updateTotalSalesAndTotalProfit();
 });
 // 解除ボタンの処理
 lifttBtn.addEventListener('click', () => {
-    location.reload();
+    localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+    salesArr.length = 0;
+    createSalesStatusList(Global.saleManager.salesArr);
+    updateTotalSalesAndTotalProfit();
 });
 // 仕入処理ボタンの処理
 purchasingBtn.addEventListener('click', () => {
-    // window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+    localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     window.location.href = 'Purchasing.html';
 });
 // 販売処理ボタンの処理
 saleBtn.addEventListener('click', () => {
-    // window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+    localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     window.location.href = 'Sale.html';
 });
 // 在庫一覧ボタンの処理
 stockListBtn.addEventListener('click', () => {
-    // window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+    localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     window.open('StockList.html', '_blank');
 });
 // リストの作成
-function createSalesStatusList() {
+function createSalesStatusList(salesArr) {
     deleteTbodyChildren();
-    Global.saleManager.salesArr.forEach((target) => {
+    salesArr.forEach((target) => {
         const tr = document.createElement('tr');
         const tdCheck = document.createElement('td');
         tdCheck.classList.add('check');
@@ -76,10 +106,10 @@ function createSalesStatusList() {
         checkBox.addEventListener('change', () => {
             checks.forEach((check, index) => {
                 if (check.checked) {
-                    Global.saleManager.salesArr[index].selected = true;
+                    salesArr[index].selected = true;
                 }
                 else {
-                    Global.saleManager.salesArr[index].selected = false;
+                    salesArr[index].selected = false;
                 }
             });
         });
@@ -118,31 +148,19 @@ function deleteTbodyChildren() {
         tbody.removeChild(tbody.firstChild);
     }
 }
-// 売上合計金額の取得
-function getTotalSales() {
-    const tdEarnings = document.querySelectorAll('td.Earnings');
-    let totalSales = 0;
-    tdEarnings.forEach((target) => {
-        var _a;
-        totalSales += Number((_a = target.textContent) === null || _a === void 0 ? void 0 : _a.slice(0, target.textContent.length - 1));
-    });
-    return totalSales;
-}
-// 利益合計金額の取得
-function getTotalProfit() {
-    const tdPurchasePrice = document.querySelectorAll('td.purchasePrice');
-    const tdQuantity = document.querySelectorAll('td.quantity');
-    let totalCost = 0;
-    for (let i = 0; i < tdPurchasePrice.length; i++) {
-        const price = tdPurchasePrice[i].textContent;
-        const quantity = tdQuantity[i].textContent;
-        totalCost += Number(price.slice(0, price.length - 1)) * Number(quantity.slice(0, quantity.length - 1));
-    }
-    return getTotalSales() - totalCost;
-}
 // 金額表示
 function updateTotalSalesAndTotalProfit() {
     totalSales.textContent = `売上合計金額 : ${Global.saleManager.getTotalSales().toLocaleString()}円`;
     totalProfit.textContent = `利益合計金額 : ${Global.saleManager.getTotalProfit().toLocaleString()}円`;
+}
+// salesManagerのチェック状態の保持の更新
+function updateCheckStatus() {
+    for (let i = 0; i < Global.saleManager.salesArr.length; i++) {
+        for (let j = 0; j < salesArr.length; j++) {
+            if (Global.saleManager.salesArr[i].id === salesArr[j].id) {
+                Global.saleManager.salesArr[i].selected = salesArr[j].selected;
+            }
+        }
+    }
 }
 //# sourceMappingURL=main.js.map

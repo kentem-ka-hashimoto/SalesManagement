@@ -26,59 +26,88 @@ let checks: NodeListOf<HTMLInputElement>;
 
 Global.getSalesStatusFromLocalStorage();
 
+let salesArr: Sales[] = [];
+
 // 今日の日付を取得
 const date: Date = new Date();
 const today: string = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice(-2)}` + '-' + `${('00' + date.getDate()).slice(-2)}`;
 
 // 画面ロード時の処理
 window.onload = function () {
-  createSalesStatusList();
+  createSalesStatusList(Global.saleManager.salesArr);
   checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
   updateTotalSalesAndTotalProfit();
 };
 
 // 絞込みボタンの処理
 narrowingBtn.addEventListener('click', () => {
-  deleteTbodyChildren();
-  Global.saleManager.removeOtherThanChecked();
-  createSalesStatusList();
+  updateCheckStatus();
+  if (salesArr.length !== 0) {
+    for (let i = salesArr.length - 1; i >= 0; i--) {
+      if (!salesArr[i].selected) {
+        salesArr.splice(i, 1);
+      }
+    }
+  } else {
+    Global.saleManager.salesArr.forEach((target) => {
+      if (target.selected) {
+        salesArr.push(target);
+      }
+    });
+  }
+  createSalesStatusList(salesArr);
   updateTotalSalesAndTotalProfit();
 });
 
 // 今日の販売ボタンの処理
 todaySaleBtn.addEventListener('click', () => {
-  deleteTbodyChildren();
-  Global.saleManager.removeOtherThanToday(today);
-  createSalesStatusList();
+  updateCheckStatus();
+  if (salesArr.length !== 0) {
+    for (let i = salesArr.length - 1; i >= 0; i--) {
+      if (salesArr[i].saleDate !== today) {
+        salesArr.splice(i, 1);
+      }
+    }
+  } else {
+    Global.saleManager.salesArr.forEach((target) => {
+      if (target.saleDate === today) {
+        salesArr.push(target);
+      }
+    });
+  }
+  createSalesStatusList(salesArr);
   updateTotalSalesAndTotalProfit();
 });
 
 // 解除ボタンの処理
 lifttBtn.addEventListener('click', () => {
-  location.reload();
+  localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+  salesArr.length = 0;
+  createSalesStatusList(Global.saleManager.salesArr);
+  updateTotalSalesAndTotalProfit();
 });
 
 // 仕入処理ボタンの処理
 purchasingBtn.addEventListener('click', () => {
-  // window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+  localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
   window.location.href = 'Purchasing.html';
 });
 // 販売処理ボタンの処理
 saleBtn.addEventListener('click', () => {
-  // window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+  localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
   window.location.href = 'Sale.html';
 });
 // 在庫一覧ボタンの処理
 stockListBtn.addEventListener('click', () => {
-  // window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+  localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
   window.open('StockList.html', '_blank');
 });
 
 // リストの作成
-function createSalesStatusList(): void {
+function createSalesStatusList(salesArr: Sales[]): void {
   deleteTbodyChildren();
 
-  Global.saleManager.salesArr.forEach((target) => {
+  salesArr.forEach((target) => {
     const tr: HTMLTableRowElement = document.createElement('tr');
     const tdCheck: HTMLTableCellElement = document.createElement('td');
     tdCheck.classList.add('check');
@@ -90,9 +119,9 @@ function createSalesStatusList(): void {
     checkBox.addEventListener('change', () => {
       checks.forEach((check, index) => {
         if (check.checked) {
-          Global.saleManager.salesArr[index].selected = true;
+          salesArr[index].selected = true;
         } else {
-          Global.saleManager.salesArr[index].selected = false;
+          salesArr[index].selected = false;
         }
       });
     });
@@ -140,4 +169,15 @@ function deleteTbodyChildren(): void {
 function updateTotalSalesAndTotalProfit(): void {
   totalSales.textContent = `売上合計金額 : ${Global.saleManager.getTotalSales().toLocaleString()}円`;
   totalProfit.textContent = `利益合計金額 : ${Global.saleManager.getTotalProfit().toLocaleString()}円`;
+}
+
+// salesManagerのチェック状態の保持の更新
+function updateCheckStatus(): void {
+  for (let i = 0; i < Global.saleManager.salesArr.length; i++) {
+    for (let j = 0; j < salesArr.length; j++) {
+      if (Global.saleManager.salesArr[i].id === salesArr[j].id) {
+        Global.saleManager.salesArr[i].selected = salesArr[j].selected;
+      }
+    }
+  }
 }
