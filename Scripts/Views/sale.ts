@@ -15,6 +15,9 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
   const returnBtn = document.getElementById('return') as HTMLButtonElement;
   // チェックボックスの取得
   let checks: NodeListOf<HTMLInputElement>;
+  // 配列末尾のidを取得
+  let idCount: number = Number(localStorage.getItem('idCount'));
+  console.log(idCount);
 
   // 画面ロード時の処理
   window.onload = function () {
@@ -51,14 +54,17 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
     window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
 
     // ユーザー入力部分の保存
+    idCount++;
     const sale: Sales = {
       product: Global.stockManager.stockArr[index],
       saleDate: saleDate.value,
       saleQuantity: Number(saleQuantity.value),
-      selected:false
+      selected: false,
+      id: idCount,
     };
     Global.saleManager.add(sale);
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+    localStorage.setItem('idCount', `${idCount}`);
     window.location.href = 'Main.html';
   });
 

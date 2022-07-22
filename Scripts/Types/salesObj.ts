@@ -5,4 +5,5 @@ export type Sales = {
   saleDate: string;
   saleQuantity: number;
   selected: boolean;
+  id: number;
 };

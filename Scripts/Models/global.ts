@@ -36,7 +36,9 @@ export class Global {
     const items: string | null = localStorage.getItem('sale');
     if (items) {
       const salesStatus: string[] = JSON.parse(items);
+      let idCount: number = 0;
       salesStatus.forEach((target: any) => {
+        idCount++;
         const saledata: Sales = {
           product: new Product(
             target.product._productName,
@@ -48,6 +50,7 @@ export class Global {
           saleDate: target.saleDate,
           saleQuantity: target.saleQuantity,
           selected: target.selected,
+          id: idCount,
         };
         Global.saleManager.add(saledata);
       });
