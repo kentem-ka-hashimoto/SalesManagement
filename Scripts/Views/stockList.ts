@@ -6,6 +6,8 @@ const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
 // 閉じるボタンの取得
 const closeBtn = document.getElementById('close') as HTMLButtonElement;
 
+Global.getStockFromLocalStorage();
+
 // 画面ロード時の処理
 window.onload = function () {
   deleteTbodyChildren();
@@ -22,8 +24,6 @@ window.addEventListener('storage', (event) => {
 
 // 在庫一覧の作成
 function createStockList(): void {
-  Global.getStockFromLocalStorage();
-
   Global.stockManager.stockArr.forEach((target: Product) => {
     const tr: HTMLTableRowElement = document.createElement('tr');
     const tdName: HTMLTableCellElement = document.createElement('td');

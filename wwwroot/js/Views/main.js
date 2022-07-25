@@ -19,7 +19,9 @@ const totalSales = document.getElementById('totalSales');
 const totalProfit = document.getElementById('totalProfit');
 // チェックボックスの取得
 let checks;
+// salesマネージャー
 Global.getSalesStatusFromLocalStorage();
+// 表示用のsalesマネージャー配列
 let salesArr = [];
 // 今日の日付を取得
 const date = new Date();
@@ -30,7 +32,7 @@ window.onload = function () {
     checks = document.getElementsByName('check');
     updateTotalSalesAndTotalProfit();
 };
-// 絞込みボタンの処理
+// 絞込みボタンの処理(チェック状態でないものは配列から削除する)
 narrowingBtn.addEventListener('click', () => {
     updateCheckStatus();
     if (salesArr.length !== 0) {
@@ -50,7 +52,7 @@ narrowingBtn.addEventListener('click', () => {
     createSalesStatusList(salesArr);
     updateTotalSalesAndTotalProfit();
 });
-// 今日の販売ボタンの処理
+// 今日の販売ボタンの処理(今日でないものは配列から削除する)
 todaySaleBtn.addEventListener('click', () => {
     updateCheckStatus();
     if (salesArr.length !== 0) {
@@ -103,6 +105,7 @@ function createSalesStatusList(salesArr) {
         checkBox.type = 'checkbox';
         checkBox.name = 'check';
         target.selected ? (checkBox.checked = true) : (checkBox.checked = false);
+        // オブジェクトのselectedの更新
         checkBox.addEventListener('change', () => {
             checks.forEach((check, index) => {
                 if (check.checked) {
@@ -120,17 +123,14 @@ function createSalesStatusList(salesArr) {
         tdSellingPrice.textContent = `${target.product.sellingPrice}円`;
         const tdPurchasePrice = document.createElement('td');
         tdPurchasePrice.textContent = `${target.product.purchasePrice}円`;
-        tdPurchasePrice.classList.add('purchasePrice');
         const tdPurchaseDate = document.createElement('td');
         tdPurchaseDate.textContent = target.product.purchaseDate;
         const tdSalesDate = document.createElement('td');
         tdSalesDate.textContent = target.saleDate;
         const tdQuantity = document.createElement('td');
         tdQuantity.textContent = `${target.saleQuantity}個`;
-        tdQuantity.classList.add('quantity');
         const tdEarnings = document.createElement('td');
         tdEarnings.textContent = `${target.product.sellingPrice * target.saleQuantity}円`;
-        tdEarnings.classList.add('Earnings');
         tr.appendChild(tdCheck);
         tr.appendChild(tdName);
         tr.appendChild(tdSellingPrice);

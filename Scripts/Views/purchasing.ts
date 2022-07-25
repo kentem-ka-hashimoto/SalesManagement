@@ -7,7 +7,7 @@ import { Global } from '../Models/global.js';
   // 仕入数の取得
   const purchaseQuantity = document.getElementById('purchaseQuantity') as HTMLInputElement;
   // 仕入価格の取得
-  const prodpurchasePriceuctName = document.getElementById('purchasePrice') as HTMLInputElement;
+  const purchasePrice = document.getElementById('purchasePrice') as HTMLInputElement;
   // 販売価格の取得
   const sellingPrice = document.getElementById('sellingPrice') as HTMLInputElement;
   // 仕入日の取得
@@ -24,7 +24,7 @@ import { Global } from '../Models/global.js';
     const product: Product = new Product(
       productName.value,
       purchaseDate.value,
-      Number(prodpurchasePriceuctName.value),
+      Number(purchasePrice.value),
       Number(sellingPrice.value),
       Number(purchaseQuantity.value)
     );

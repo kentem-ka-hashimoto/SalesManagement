@@ -17,7 +17,8 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
   let checks: NodeListOf<HTMLInputElement>;
   // 配列末尾のidを取得
   let idCount: number = Number(localStorage.getItem('idCount'));
-  console.log(idCount);
+
+  Global.getStockFromLocalStorage();
 
   // 画面ロード時の処理
   window.onload = function () {
@@ -75,8 +76,6 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
 
   // 一覧の表示
   function createStockList(): void {
-    Global.getStockFromLocalStorage();
-
     Global.stockManager.stockArr.forEach((target: Product) => {
       const tr: HTMLTableRowElement = document.createElement('tr');
       const tdCheck: HTMLTableCellElement = document.createElement('td');
