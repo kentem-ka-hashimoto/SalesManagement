@@ -163,6 +163,7 @@ function updateCheckStatus() {
         }
     }
 }
+// ボタンの有効無効
 function checkDisabledBtn() {
     let checkCount = 0;
     checks.forEach((check) => {
@@ -171,6 +172,7 @@ function checkDisabledBtn() {
         narrowingBtn.disabled = checkCount === 0;
     });
 }
+// 絞込み、今日の販売ボタンを押した際の画面更新部分の処理
 function displayUpdate() {
     updateCheckStatus();
     createSalesStatusList(salesArr);

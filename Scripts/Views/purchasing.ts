@@ -19,6 +19,14 @@ import { Global } from '../Models/global.js';
 
   Global.getStockFromLocalStorage();
 
+  updateDisabledDecisionBtn();
+
+  // ボタンの有効無効判定
+  window.addEventListener('change', () => {
+    updateDisabledDecisionBtn();
+  });
+
+
   // 決定ボタンの処理
   decisionBtn.addEventListener('click', () => {
     const product: Product = new Product(
@@ -38,4 +46,14 @@ import { Global } from '../Models/global.js';
   returnBtn.addEventListener('click', () => {
     window.location.href = 'Main.html';
   });
+
+  // 決定ボタンの有効無効
+  function updateDisabledDecisionBtn(): void {
+    decisionBtn.disabled =
+      productName.value === '' ||
+      purchaseQuantity.value === '' ||
+      purchasePrice.value === '' ||
+      sellingPrice.value === '' ||
+      purchaseDate.value === '';
+  }
 }

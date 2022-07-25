@@ -179,6 +179,7 @@ function updateCheckStatus(): void {
   }
 }
 
+// ボタンの有効無効
 function checkDisabledBtn(): void {
   let checkCount: number = 0;
   checks.forEach((check) => {
@@ -187,6 +188,7 @@ function checkDisabledBtn(): void {
   });
 }
 
+// 絞込み、今日の販売ボタンを押した際の画面更新部分の処理
 function displayUpdate(): void {
   updateCheckStatus();
   createSalesStatusList(salesArr);

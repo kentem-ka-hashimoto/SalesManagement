@@ -36,7 +36,14 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
         }
       });
     });
+    updateDisabledInput();
+    updateDisabledDecisionBtn();
   };
+
+  // ボタンの有効無効判定
+  window.addEventListener('change', () => {
+    updateDisabledDecisionBtn();
+  });
 
   // 決定ボタンの処理
   decisionBtn.addEventListener('click', () => {
@@ -83,6 +90,11 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
       const checkBox: HTMLInputElement = document.createElement('input');
       checkBox.type = 'checkbox';
       checkBox.name = 'check';
+      // 入力部分の有効無効判定
+      checkBox.addEventListener('change', () => {
+        updateDisabledInput();
+      });
+
       tdCheck.appendChild(checkBox);
       const tdName: HTMLTableCellElement = document.createElement('td');
       tdName.textContent = target.productName;
@@ -101,5 +113,20 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
     while (tbody?.firstChild) {
       tbody.removeChild(tbody.firstChild);
     }
+  }
+
+  // テキストボックス入力の有効無効
+  function updateDisabledInput(): void {
+    let checkCount: number = 0;
+    checks.forEach((check) => {
+      if (check.checked) checkCount++;
+      saleQuantity.disabled = checkCount === 0;
+      saleDate.disabled = checkCount === 0;
+    });
+  }
+
+  // 決定ボタンの有効無効
+  function updateDisabledDecisionBtn(): void {
+    decisionBtn.disabled = saleQuantity.value === '' || saleDate.value === '';
   }
 }
