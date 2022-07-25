@@ -3,6 +3,8 @@ import { Product } from '../Models/product.js';
 import { Sales } from '../../Scripts/Types/salesObj.js';
 
 {
+  // アラートメッセージ
+  const NO_STOCK: string = '在庫数が足りません。';
   // tbodyの取得
   const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
   // 販売数の取得
@@ -58,19 +60,23 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
     });
 
     // 在庫数の更新
-    Global.stockManager.stockArr[index].stock -= Number(saleQuantity.value);
-    window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
-
-    // ユーザー入力部分の保存
-    idCount++;
-    const sale: Sales = {
-      product: Global.stockManager.stockArr[index],
-      saleDate: saleDate.value,
-      saleQuantity: Number(saleQuantity.value),
-      selected: false,
-      id: idCount,
-    };
-    Global.saleManager.add(sale);
+    try {
+      Global.stockManager.stockArr[index].stock -= Number(saleQuantity.value);
+      window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
+      // ユーザー入力部分の保存
+      idCount++;
+      const sale: Sales = {
+        product: Global.stockManager.stockArr[index],
+        saleDate: saleDate.value,
+        saleQuantity: Number(saleQuantity.value),
+        selected: false,
+        id: idCount,
+      };
+      Global.saleManager.add(sale);
+    } catch {
+      alert(NO_STOCK);
+      return;
+    }
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     localStorage.setItem('idCount', `${idCount}`);
     window.location.href = 'Main.html';

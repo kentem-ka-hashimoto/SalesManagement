@@ -29,4 +29,43 @@ describe('ProductTest', () => {
     // 在庫数の取得
     expect(product.stock).toBe(600);
   });
+
+  test('propertyErrorTest', () => {
+    let product: Product;
+    // 仕入価格がマイナス
+    expect(() => (product = new Product('桃', '2022-07-20', -50, 400, 400))).toThrowError('The value is abnormal');
+    // 販売価格がマイナス
+    expect(() => (product = new Product('桃', '2022-07-20', 50, -400, 400))).toThrowError('The value is abnormal');
+    // 販売価格が仕入価格よりも安い
+    expect(() => (product = new Product('桃', '2022-07-20', 400, 50, 400))).toThrowError('The value is abnormal');
+  });
+
+  test('setStockTest', () => {
+    let product: Product = new Product('桃', '2022-07-20', 50, 400, 400);
+
+    // 変更前の確認
+    expect(product.stock).toBe(400);
+
+    // 300に変更後
+    product.stock = 300;
+    expect(product.stock).toBe(300);
+
+    // 1に変更
+    product.stock = 1;
+    expect(product.stock).toBe(1);
+  });
+
+  test('setStockErrorTest', () => {
+    let product: Product = new Product('桃', '2022-07-20', 50, 400, 400);
+
+    // 変更前の確認
+    expect(product.stock).toBe(400);
+
+    // 在庫0
+    product.stock = 0;
+    expect(product.stock).toBe(0);
+
+    // 在庫-1
+    expect(() => (product.stock = -1)).toThrowError('The value is abnormal');
+  });
 });

@@ -1,4 +1,6 @@
 export class Product {
+  private readonly ABNORMAL_VALUE_ERROR: string = 'The value is abnormal';
+
   constructor(
     private _productName: string,
     private _purchaseDate: string,
@@ -11,6 +13,10 @@ export class Product {
     this._purchasePrice = _purchasePrice;
     this._sellingPrice = _sellingPrice;
     this._stock = _stock;
+
+    if (this.checkValue(this._purchasePrice) || this.checkValue(this._sellingPrice) || this._sellingPrice <= this._purchasePrice) {
+      throw new Error(this.ABNORMAL_VALUE_ERROR);
+    }
   }
 
   public get productName(): string {
@@ -22,6 +28,9 @@ export class Product {
   }
 
   public set stock(value: number) {
+    if (this.checkValue(value)) {
+      throw new RangeError(this.ABNORMAL_VALUE_ERROR);
+    }
     this._stock = value;
   }
 
@@ -35,5 +44,9 @@ export class Product {
 
   public get purchaseDate(): string {
     return this._purchaseDate;
+  }
+
+  private checkValue(target: number): boolean {
+    return target < 0;
   }
 }
