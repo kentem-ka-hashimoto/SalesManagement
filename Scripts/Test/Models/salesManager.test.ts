@@ -66,7 +66,7 @@ describe('SalesManagerTest', () => {
       id: 1,
     };
     manager.add(sale);
-    // 二つ目の追加
+    // 2つ目の追加
     sale = {
       product: new Product('お茶', '2022-07-20', 60, 150, 600),
       saleDate: '2022-07-28',
@@ -77,6 +77,18 @@ describe('SalesManagerTest', () => {
     manager.add(sale);
 
     expect(manager.getTotalSales()).toBe(70000);
+
+    // 3つ目の追加
+    sale = {
+      product: new Product('アイス', '2022-07-20', 60, 200, 600),
+      saleDate: '2022-07-28',
+      saleQuantity: 600,
+      selected: true,
+      id: 3,
+    };
+    manager.add(sale);
+
+    expect(manager.getTotalSales()).toBe(190000);
   });
 
   test('getTotalProfitTest', () => {
@@ -90,7 +102,7 @@ describe('SalesManagerTest', () => {
       id: 1,
     };
     manager.add(sale);
-    // 二つ目の追加
+    // 2つ目の追加
     sale = {
       product: new Product('お茶', '2022-07-20', 60, 150, 600),
       saleDate: '2022-07-28',
@@ -101,5 +113,17 @@ describe('SalesManagerTest', () => {
     manager.add(sale);
 
     expect(manager.getTotalProfit()).toBe(38000);
+
+    // 3つ目の追加
+    sale = {
+      product: new Product('アイス', '2022-07-20', 60, 200, 600),
+      saleDate: '2022-07-28',
+      saleQuantity: 600,
+      selected: true,
+      id: 3,
+    };
+    manager.add(sale);
+
+    expect(manager.getTotalProfit()).toBe(122000);
   });
 });
