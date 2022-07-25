@@ -36,11 +36,12 @@ window.onload = function () {
   createSalesStatusList(Global.saleManager.salesArr);
   checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
   updateTotalSalesAndTotalProfit();
+  checkDisabledBtn();
+  lifttBtn.disabled = true;
 };
 
 // 絞込みボタンの処理(チェック状態でないものは配列から削除する)
 narrowingBtn.addEventListener('click', () => {
-  updateCheckStatus();
   if (salesArr.length !== 0) {
     for (let i = salesArr.length - 1; i >= 0; i--) {
       if (!salesArr[i].selected) {
@@ -54,13 +55,11 @@ narrowingBtn.addEventListener('click', () => {
       }
     });
   }
-  createSalesStatusList(salesArr);
-  updateTotalSalesAndTotalProfit();
+  displayUpdate();
 });
 
 // 今日の販売ボタンの処理(今日でないものは配列から削除する)
 todaySaleBtn.addEventListener('click', () => {
-  updateCheckStatus();
   if (salesArr.length !== 0) {
     for (let i = salesArr.length - 1; i >= 0; i--) {
       if (salesArr[i].saleDate !== today) {
@@ -74,8 +73,7 @@ todaySaleBtn.addEventListener('click', () => {
       }
     });
   }
-  createSalesStatusList(salesArr);
-  updateTotalSalesAndTotalProfit();
+  displayUpdate();
 });
 
 // 解除ボタンの処理
@@ -84,6 +82,7 @@ lifttBtn.addEventListener('click', () => {
   salesArr.length = 0;
   createSalesStatusList(Global.saleManager.salesArr);
   updateTotalSalesAndTotalProfit();
+  lifttBtn.disabled = true;
 });
 
 // 仕入処理ボタンの処理
@@ -124,6 +123,7 @@ function createSalesStatusList(salesArr: Sales[]): void {
           salesArr[index].selected = false;
         }
       });
+      checkDisabledBtn();
     });
     tdCheck.appendChild(checkBox);
 
@@ -177,4 +177,19 @@ function updateCheckStatus(): void {
       }
     }
   }
+}
+
+function checkDisabledBtn(): void {
+  let checkCount: number = 0;
+  checks.forEach((check) => {
+    if (check.checked) checkCount++;
+    narrowingBtn.disabled = checkCount === 0;
+  });
+}
+
+function displayUpdate(): void {
+  updateCheckStatus();
+  createSalesStatusList(salesArr);
+  updateTotalSalesAndTotalProfit();
+  lifttBtn.disabled = false;
 }
