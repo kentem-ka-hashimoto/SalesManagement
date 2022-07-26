@@ -10,7 +10,6 @@ export class Sale {
     this._product = _product;
     this._saleDate = _saleDate;
     this._saleQuantity = _saleQuantity;
-
     this._id = _id;
   }
 

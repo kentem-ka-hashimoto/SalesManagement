@@ -26,7 +26,6 @@ const date = new Date();
 const today = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice(-2)}` + '-' + `${('00' + date.getDate()).slice(-2)}`;
 // 画面ロード時の処理
 window.onload = function () {
-    // salesマネージャー
     Global.getSalesStatusFromLocalStorage();
     const items = localStorage.getItem('map');
     if (items) {
@@ -66,13 +65,11 @@ lifttBtn.addEventListener('click', () => {
 });
 // 仕入処理ボタンの処理
 purchasingBtn.addEventListener('click', () => {
-    setCheckStatusToLocalStorage();
-    window.location.href = 'Purchasing.html';
+    transitionPage('Purchasing.html');
 });
 // 販売処理ボタンの処理
 saleBtn.addEventListener('click', () => {
-    setCheckStatusToLocalStorage();
-    window.location.href = 'Sale.html';
+    transitionPage('Sale.html');
 });
 // 在庫一覧ボタンの処理
 stockListBtn.addEventListener('click', () => {
@@ -154,5 +151,10 @@ function displayUpdate() {
 function setCheckStatusToLocalStorage() {
     let items = Array.from(map.entries());
     localStorage.setItem('map', JSON.stringify(items));
+}
+// ページ遷移
+function transitionPage(link) {
+    setCheckStatusToLocalStorage();
+    window.location.href = link;
 }
 //# sourceMappingURL=main.js.map

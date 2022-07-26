@@ -1,6 +1,4 @@
 import { Global } from '../Models/global.js';
-import { Sale } from '../Models/sale.js';
-import { SalesManager } from '../Models/salesManager.js';
 
 // tbodyの取得
 const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
@@ -31,7 +29,6 @@ const today: string = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1
 
 // 画面ロード時の処理
 window.onload = function () {
-  // salesマネージャー
   Global.getSalesStatusFromLocalStorage();
   const items: string | null = localStorage.getItem('map');
   if (items) {
@@ -75,13 +72,11 @@ lifttBtn.addEventListener('click', () => {
 
 // 仕入処理ボタンの処理
 purchasingBtn.addEventListener('click', () => {
-  setCheckStatusToLocalStorage();
-  window.location.href = 'Purchasing.html';
+  transitionPage('Purchasing.html');
 });
 // 販売処理ボタンの処理
 saleBtn.addEventListener('click', () => {
-  setCheckStatusToLocalStorage();
-  window.location.href = 'Sale.html';
+  transitionPage('Sale.html');
 });
 // 在庫一覧ボタンの処理
 stockListBtn.addEventListener('click', () => {
@@ -173,4 +168,10 @@ function displayUpdate(): void {
 function setCheckStatusToLocalStorage(): void {
   let items = Array.from(map.entries());
   localStorage.setItem('map', JSON.stringify(items));
+}
+
+// ページ遷移
+function transitionPage(link: string): void {
+  setCheckStatusToLocalStorage();
+  window.location.href = link;
 }
