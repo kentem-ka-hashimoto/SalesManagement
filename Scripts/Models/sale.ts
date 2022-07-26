@@ -1,7 +1,13 @@
 import { Product } from './product.js';
 
 export class Sale {
-  constructor(private _product: Product, private _saleDate: string, private _saleQuantity: number, private _isSelected: boolean, private _id: number) {
+  constructor(
+    private _product: Product,
+    private _saleDate: string,
+    private _saleQuantity: number,
+    private _isSelected: boolean,
+    private _id: number
+  ) {
     this._product = _product;
     this._saleDate = _saleDate;
     this._saleQuantity = _saleQuantity;
@@ -9,23 +15,27 @@ export class Sale {
     this._id = _id;
   }
 
-  get product(): Product {
+  public get product(): Product {
     return this._product;
   }
 
-  get saleDate(): string {
+  public get saleDate(): string {
     return this._saleDate;
   }
 
-  get saleQuantity(): number {
+  public get saleQuantity(): number {
     return this._saleQuantity;
   }
 
-  get isSelected(): boolean {
+  public get isSelected(): boolean {
     return this._isSelected;
   }
 
-  get id(): number {
+  public set isSelected(value: boolean) {
+    this._isSelected = value;
+  }
+
+  public get id(): number {
     return this._id;
   }
 }

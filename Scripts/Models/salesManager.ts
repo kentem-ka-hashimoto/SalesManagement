@@ -1,4 +1,3 @@
-import { Sales } from '../Types/salesObj.js';
 import { Sale } from './sale.js';
 
 export class SalesManager {

@@ -1,5 +1,5 @@
 import { Global } from '../Models/global.js';
-import { Sales } from '../../Scripts/Types/salesObj.js';
+import { Sale } from '../Models/sale.js';
 import { SalesManager } from '../Models/salesManager.js';
 
 // tbodyの取得
@@ -22,7 +22,6 @@ const totalSales = document.getElementById('totalSales') as HTMLElement;
 const totalProfit = document.getElementById('totalProfit') as HTMLElement;
 // チェックボックスの取得
 let checks: NodeListOf<HTMLInputElement>;
-checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
 
 // 表示用のsalesマネージャー配列
 let salesMgr: SalesManager = new SalesManager();
@@ -45,13 +44,13 @@ window.onload = function () {
 narrowingBtn.addEventListener('click', () => {
   if (salesMgr.salesArr.length !== 0) {
     for (let i = salesMgr.salesArr.length - 1; i >= 0; i--) {
-      if (!salesMgr.salesArr[i].selected) {
+      if (!salesMgr.salesArr[i].isSelected) {
         salesMgr.salesArr.splice(i, 1);
       }
     }
   } else {
     Global.saleManager.salesArr.forEach((target) => {
-      if (target.selected) {
+      if (target.isSelected) {
         salesMgr.salesArr.push(target);
       }
     });
@@ -103,7 +102,7 @@ stockListBtn.addEventListener('click', () => {
 });
 
 // リストの作成
-function createSalesStatusList(salesArr: Sales[]): void {
+function createSalesStatusList(salesArr: Sale[]): void {
   deleteTbodyChildren();
 
   salesArr.forEach((target) => {
@@ -113,12 +112,12 @@ function createSalesStatusList(salesArr: Sales[]): void {
     const checkBox: HTMLInputElement = document.createElement('input');
     checkBox.type = 'checkbox';
     checkBox.name = 'check';
-    checkBox.checked = target.selected;
+    checkBox.checked = target.isSelected;
 
-    // オブジェクトのselectedの更新
+    // isSelectedの更新
     checkBox.addEventListener('change', () => {
-      checks.forEach((check) => {
-        target.selected = check.checked;
+      checks.forEach((check, index) => {
+        salesArr[index].isSelected = check.checked;
       });
       checkDisabledBtn();
     });
@@ -127,17 +126,17 @@ function createSalesStatusList(salesArr: Sales[]): void {
     const tdName: HTMLTableCellElement = document.createElement('td');
     tdName.textContent = target.product.productName;
     const tdSellingPrice: HTMLTableCellElement = document.createElement('td');
-    tdSellingPrice.textContent = `${target.product.sellingPrice}円`;
+    tdSellingPrice.textContent = `${target.product.sellingPrice.toLocaleString()}円`;
     const tdPurchasePrice: HTMLTableCellElement = document.createElement('td');
-    tdPurchasePrice.textContent = `${target.product.purchasePrice}円`;
+    tdPurchasePrice.textContent = `${target.product.purchasePrice.toLocaleString()}円`;
     const tdPurchaseDate: HTMLTableCellElement = document.createElement('td');
     tdPurchaseDate.textContent = target.product.purchaseDate;
     const tdSalesDate: HTMLTableCellElement = document.createElement('td');
     tdSalesDate.textContent = target.saleDate;
     const tdQuantity: HTMLTableCellElement = document.createElement('td');
-    tdQuantity.textContent = `${target.saleQuantity}個`;
+    tdQuantity.textContent = `${target.saleQuantity.toLocaleString()}個`;
     const tdEarnings: HTMLTableCellElement = document.createElement('td');
-    tdEarnings.textContent = `${target.product.sellingPrice * target.saleQuantity}円`;
+    tdEarnings.textContent = `${(target.product.sellingPrice * target.saleQuantity).toLocaleString()}円`;
 
     tr.appendChild(tdCheck);
     tr.appendChild(tdName);
@@ -150,6 +149,7 @@ function createSalesStatusList(salesArr: Sales[]): void {
 
     tbody?.appendChild(tr);
   });
+  checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
 }
 
 // tbody内の削除
@@ -160,7 +160,7 @@ function deleteTbodyChildren(): void {
 }
 
 // 金額表示
-function updateTotalSalesAndTotalProfit(salesMgr:SalesManager): void {
+function updateTotalSalesAndTotalProfit(salesMgr: SalesManager): void {
   totalSales.textContent = `売上合計金額 : ${salesMgr.getTotalSales().toLocaleString()}円`;
   totalProfit.textContent = `利益合計金額 : ${salesMgr.getTotalProfit().toLocaleString()}円`;
 }
@@ -170,7 +170,7 @@ function updateCheckStatus(): void {
   for (let i = 0; i < Global.saleManager.salesArr.length; i++) {
     for (let j = 0; j < salesMgr.salesArr.length; j++) {
       if (Global.saleManager.salesArr[i].id === salesMgr.salesArr[j].id) {
-        Global.saleManager.salesArr[i].selected = salesMgr.salesArr[j].selected;
+        Global.saleManager.salesArr[i].isSelected = salesMgr.salesArr[j].isSelected;
       }
     }
   }

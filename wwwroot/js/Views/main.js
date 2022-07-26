@@ -20,7 +20,6 @@ const totalSales = document.getElementById('totalSales');
 const totalProfit = document.getElementById('totalProfit');
 // チェックボックスの取得
 let checks;
-checks = document.getElementsByName('check');
 // 表示用のsalesマネージャー配列
 let salesMgr = new SalesManager();
 // 今日の日付を取得
@@ -39,14 +38,14 @@ window.onload = function () {
 narrowingBtn.addEventListener('click', () => {
     if (salesMgr.salesArr.length !== 0) {
         for (let i = salesMgr.salesArr.length - 1; i >= 0; i--) {
-            if (!salesMgr.salesArr[i].selected) {
+            if (!salesMgr.salesArr[i].isSelected) {
                 salesMgr.salesArr.splice(i, 1);
             }
         }
     }
     else {
         Global.saleManager.salesArr.forEach((target) => {
-            if (target.selected) {
+            if (target.isSelected) {
                 salesMgr.salesArr.push(target);
             }
         });
@@ -104,11 +103,11 @@ function createSalesStatusList(salesArr) {
         const checkBox = document.createElement('input');
         checkBox.type = 'checkbox';
         checkBox.name = 'check';
-        checkBox.checked = target.selected;
-        // オブジェクトのselectedの更新
+        checkBox.checked = target.isSelected;
+        // isSelectedの更新
         checkBox.addEventListener('change', () => {
-            checks.forEach((check) => {
-                target.selected = check.checked;
+            checks.forEach((check, index) => {
+                salesArr[index].isSelected = check.checked;
             });
             checkDisabledBtn();
         });
@@ -116,17 +115,17 @@ function createSalesStatusList(salesArr) {
         const tdName = document.createElement('td');
         tdName.textContent = target.product.productName;
         const tdSellingPrice = document.createElement('td');
-        tdSellingPrice.textContent = `${target.product.sellingPrice}円`;
+        tdSellingPrice.textContent = `${target.product.sellingPrice.toLocaleString()}円`;
         const tdPurchasePrice = document.createElement('td');
-        tdPurchasePrice.textContent = `${target.product.purchasePrice}円`;
+        tdPurchasePrice.textContent = `${target.product.purchasePrice.toLocaleString()}円`;
         const tdPurchaseDate = document.createElement('td');
         tdPurchaseDate.textContent = target.product.purchaseDate;
         const tdSalesDate = document.createElement('td');
         tdSalesDate.textContent = target.saleDate;
         const tdQuantity = document.createElement('td');
-        tdQuantity.textContent = `${target.saleQuantity}個`;
+        tdQuantity.textContent = `${target.saleQuantity.toLocaleString()}個`;
         const tdEarnings = document.createElement('td');
-        tdEarnings.textContent = `${target.product.sellingPrice * target.saleQuantity}円`;
+        tdEarnings.textContent = `${(target.product.sellingPrice * target.saleQuantity).toLocaleString()}円`;
         tr.appendChild(tdCheck);
         tr.appendChild(tdName);
         tr.appendChild(tdSellingPrice);
@@ -137,6 +136,7 @@ function createSalesStatusList(salesArr) {
         tr.appendChild(tdEarnings);
         tbody === null || tbody === void 0 ? void 0 : tbody.appendChild(tr);
     });
+    checks = document.getElementsByName('check');
 }
 // tbody内の削除
 function deleteTbodyChildren() {
@@ -154,7 +154,7 @@ function updateCheckStatus() {
     for (let i = 0; i < Global.saleManager.salesArr.length; i++) {
         for (let j = 0; j < salesMgr.salesArr.length; j++) {
             if (Global.saleManager.salesArr[i].id === salesMgr.salesArr[j].id) {
-                Global.saleManager.salesArr[i].selected = salesMgr.salesArr[j].selected;
+                Global.saleManager.salesArr[i].isSelected = salesMgr.salesArr[j].isSelected;
             }
         }
     }

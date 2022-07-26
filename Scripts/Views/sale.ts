@@ -1,6 +1,6 @@
 import { Global } from '../Models/global.js';
 import { Product } from '../Models/product.js';
-import { Sales } from '../../Scripts/Types/salesObj.js';
+import { Sale } from '../Models/sale.js';
 
 {
   // アラートメッセージ
@@ -65,13 +65,14 @@ import { Sales } from '../../Scripts/Types/salesObj.js';
       window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
       // ユーザー入力部分の保存
       idCount++;
-      const sale: Sales = {
-        product: Global.stockManager.stockArr[index],
-        saleDate: saleDate.value,
-        saleQuantity: Number(saleQuantity.value),
-        selected: false,
-        id: idCount,
-      };
+      const sale: Sale = new Sale(Global.stockManager.stockArr[index], saleDate.value, Number(saleQuantity.value), false, idCount);
+      // const sale: Sales = {
+      //   product: Global.stockManager.stockArr[index],
+      //   saleDate: saleDate.value,
+      //   saleQuantity: Number(saleQuantity.value),
+      //   selected: false,
+      //   id: idCount,
+      // };
       Global.saleManager.add(sale);
     } catch {
       alert(NO_STOCK);

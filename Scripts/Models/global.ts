@@ -1,7 +1,7 @@
 import { StockManager } from '../Models/stockManager.js';
 import { SalesManager } from '../Models/salesManager.js';
 import { Product } from './product.js';
-import { Sales } from '../Types/salesObj.js';
+import { Sale } from './sale.js';
 
 export class Global {
   private static _stockManager: StockManager;
@@ -39,20 +39,20 @@ export class Global {
       let idCount: number = 0;
       salesStatus.forEach((target: any) => {
         idCount++;
-        const saledata: Sales = {
-          product: new Product(
-            target.product._productName,
-            target.product._purchaseDate,
-            target.product._purchasePrice,
-            target.product._sellingPrice,
-            target.product._stock
+        const saleData: Sale = new Sale(
+          new Product(
+            target._product._productName,
+            target._product._purchaseDate,
+            target._product._purchasePrice,
+            target._product._sellingPrice,
+            target._product._stock
           ),
-          saleDate: target.saleDate,
-          saleQuantity: target.saleQuantity,
-          selected: target.selected,
-          id: idCount,
-        };
-        Global.saleManager.add(saledata);
+          target._saleDate,
+          target._saleQuantity,
+          target._isSelected,
+          idCount
+        );
+        Global.saleManager.add(saleData);
       });
     }
   }
