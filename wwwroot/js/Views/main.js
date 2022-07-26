@@ -82,7 +82,6 @@ lifttBtn.addEventListener('click', () => {
     createSalesStatusList(Global.saleManager.salesArr);
     updateTotalSalesAndTotalProfit(Global.saleManager);
     lifttBtn.disabled = true;
-    console.log(map);
 });
 // 仕入処理ボタンの処理
 purchasingBtn.addEventListener('click', () => {

@@ -70,7 +70,7 @@ import { Sale } from '../Models/sale.js';
       window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
       // ユーザー入力部分の保存
       idCount++;
-      const sale: Sale = new Sale(Global.stockManager.stockArr[index], saleDate.value, Number(saleQuantity.value), false, idCount);
+      const sale: Sale = new Sale(Global.stockManager.stockArr[index], saleDate.value, Number(saleQuantity.value), idCount);
       Global.saleManager.add(sale);
     } catch (e) {
       if (e instanceof RangeError) {
