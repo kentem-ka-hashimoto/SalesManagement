@@ -26,4 +26,8 @@ export class SalesManager {
     });
     return this.getTotalSales() - totalCost;
   }
+
+  public clearArr(): void {
+    this._salesArr.length = 0;
+  }
 }

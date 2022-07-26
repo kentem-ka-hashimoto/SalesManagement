@@ -22,8 +22,6 @@ const totalSales = document.getElementById('totalSales') as HTMLElement;
 const totalProfit = document.getElementById('totalProfit') as HTMLElement;
 // チェックボックスの取得
 let checks: NodeListOf<HTMLInputElement>;
-// 表示用のsalesマネージャー配列
-let salesMgr: SalesManager = new SalesManager();
 // mapを用意
 let map: Map<string, boolean> = new Map();
 
@@ -39,53 +37,39 @@ window.onload = function () {
   if (items) {
     map = new Map(JSON.parse(items));
   }
-  createSalesStatusList(Global.saleManager.salesArr);
-  updateTotalSalesAndTotalProfit(Global.saleManager);
+  createSalesStatusList();
+  updateTotalSalesAndTotalProfit();
   checkDisabledBtn();
   lifttBtn.disabled = true;
 };
 
 // 絞込みボタンの処理(チェック状態でないものは配列から削除する)
 narrowingBtn.addEventListener('click', () => {
-  if (salesMgr.salesArr.length !== 0) {
-    for (let i = salesMgr.salesArr.length - 1; i >= 0; i--) {
-      if (!map.get(`${salesMgr.salesArr[i].id}`)) {
-        salesMgr.salesArr.splice(i, 1);
-      }
+  for (let i = Global.saleManager.salesArr.length - 1; i >= 0; i--) {
+    if (!map.get(`${Global.saleManager.salesArr[i].id}`)) {
+      Global.saleManager.salesArr.splice(i, 1);
     }
-  } else {
-    map.forEach((target, key) => {
-      if (target) {
-        salesMgr.salesArr.push(Global.saleManager.salesArr[Number(key) - 1]);
-      }
-    });
   }
   displayUpdate();
 });
 
 // 今日の販売ボタンの処理(今日でないものは配列から削除する)
 todaySaleBtn.addEventListener('click', () => {
-  if (salesMgr.salesArr.length !== 0) {
-    for (let i = salesMgr.salesArr.length - 1; i >= 0; i--) {
-      if (salesMgr.salesArr[i].saleDate !== today) {
-        salesMgr.salesArr.splice(i, 1);
-      }
+  for (let i = Global.saleManager.salesArr.length - 1; i >= 0; i--) {
+    if (Global.saleManager.salesArr[i].saleDate !== today) {
+      Global.saleManager.salesArr.splice(i, 1);
     }
-  } else {
-    Global.saleManager.salesArr.forEach((target) => {
-      if (target.saleDate === today) {
-        salesMgr.salesArr.push(target);
-      }
-    });
   }
   displayUpdate();
 });
 
 // 解除ボタンの処理
 lifttBtn.addEventListener('click', () => {
-  salesMgr.salesArr.length = 0;
-  createSalesStatusList(Global.saleManager.salesArr);
-  updateTotalSalesAndTotalProfit(Global.saleManager);
+  setCheckStatusToLocalStorage();
+  Global.saleManager.clearArr();
+  Global.getSalesStatusFromLocalStorage();
+  createSalesStatusList();
+  updateTotalSalesAndTotalProfit();
   lifttBtn.disabled = true;
 });
 
@@ -106,10 +90,10 @@ stockListBtn.addEventListener('click', () => {
 });
 
 // リストの作成
-function createSalesStatusList(salesArr: Sale[]): void {
+function createSalesStatusList(): void {
   deleteTbodyChildren();
 
-  salesArr.forEach((target, index) => {
+  Global.saleManager.salesArr.forEach((target) => {
     const tr: HTMLTableRowElement = document.createElement('tr');
     const tdCheck: HTMLTableCellElement = document.createElement('td');
     tdCheck.classList.add('check');
@@ -120,9 +104,8 @@ function createSalesStatusList(salesArr: Sale[]): void {
 
     // isSelectedの更新
     checkBox.addEventListener('change', () => {
-      for (let i = 0; i < checks.length; i++){
-        map.set(`${salesArr[i].id}`, checks[i].checked);
-        
+      for (let i = 0; i < checks.length; i++) {
+        map.set(`${Global.saleManager.salesArr[i].id}`, checks[i].checked);
       }
       checkDisabledBtn();
     });
@@ -165,9 +148,9 @@ function deleteTbodyChildren(): void {
 }
 
 // 金額表示
-function updateTotalSalesAndTotalProfit(salesMgr: SalesManager): void {
-  totalSales.textContent = `売上合計金額 : ${salesMgr.getTotalSales().toLocaleString()}円`;
-  totalProfit.textContent = `利益合計金額 : ${salesMgr.getTotalProfit().toLocaleString()}円`;
+function updateTotalSalesAndTotalProfit(): void {
+  totalSales.textContent = `売上合計金額 : ${Global.saleManager.getTotalSales().toLocaleString()}円`;
+  totalProfit.textContent = `利益合計金額 : ${Global.saleManager.getTotalProfit().toLocaleString()}円`;
 }
 
 // ボタンの有効無効
@@ -181,8 +164,8 @@ function checkDisabledBtn(): void {
 
 // 絞込み、今日の販売ボタンを押した際の画面更新部分の処理
 function displayUpdate(): void {
-  createSalesStatusList(salesMgr.salesArr);
-  updateTotalSalesAndTotalProfit(salesMgr);
+  createSalesStatusList();
+  updateTotalSalesAndTotalProfit();
   lifttBtn.disabled = false;
 }
 

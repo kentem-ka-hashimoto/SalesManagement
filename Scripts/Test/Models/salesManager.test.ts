@@ -83,4 +83,23 @@ describe('SalesManagerTest', () => {
     manager.add(sale);
     expect(manager.getTotalProfit()).toBe(122000);
   });
+
+  test('clearArrTest', () => {
+    let manager = new SalesManager();
+    let sale: Sale = new Sale(new Product('桃', '2022-07-20', 200, 400, 200), '2022-07-24', 100, 1);
+    expect(manager.salesArr.length).toBe(0);
+
+    // 1つ追加されているか確認
+    manager.add(sale);
+    expect(manager.salesArr.length).toBe(1);
+
+    // 2つ目追加されているか確認
+    sale = new Sale(new Product('お茶', '2022-07-20', 60, 150, 600), '2022-07-28', 200, 2);
+    manager.add(sale);
+    expect(manager.salesArr.length).toBe(2);
+
+    manager.clearArr();
+    // 配列が空になっている確認
+    expect(manager.salesArr.length).toBe(0);
+  });
 });
