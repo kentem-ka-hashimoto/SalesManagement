@@ -1,13 +1,14 @@
 import { Sales } from '../Types/salesObj.js';
+import { Sale } from './sale.js';
 
 export class SalesManager {
-  private _salesArr: Sales[] = [];
+  private _salesArr: Sale[] = [];
 
-  public get salesArr(): Sales[] {
+  public get salesArr(): Sale[] {
     return this._salesArr;
   }
 
-  public add(sale: Sales): void {
+  public add(sale: Sale): void {
     this._salesArr.push(sale);
   }
 
