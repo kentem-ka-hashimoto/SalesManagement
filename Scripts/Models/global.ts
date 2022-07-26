@@ -49,7 +49,6 @@ export class Global {
           ),
           target._saleDate,
           target._saleQuantity,
-          target._isSelected,
           idCount
         );
         Global.saleManager.add(saleData);

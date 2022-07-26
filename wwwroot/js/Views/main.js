@@ -22,6 +22,8 @@ const totalProfit = document.getElementById('totalProfit');
 let checks;
 // 表示用のsalesマネージャー配列
 let salesMgr = new SalesManager();
+// mapを用意
+let map = new Map();
 // 今日の日付を取得
 const date = new Date();
 const today = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice(-2)}` + '-' + `${('00' + date.getDate()).slice(-2)}`;
@@ -29,6 +31,10 @@ const today = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice
 window.onload = function () {
     // salesマネージャー
     Global.getSalesStatusFromLocalStorage();
+    const items = localStorage.getItem('map');
+    if (items) {
+        map = new Map(JSON.parse(items));
+    }
     createSalesStatusList(Global.saleManager.salesArr);
     updateTotalSalesAndTotalProfit(Global.saleManager);
     checkDisabledBtn();
@@ -38,15 +44,15 @@ window.onload = function () {
 narrowingBtn.addEventListener('click', () => {
     if (salesMgr.salesArr.length !== 0) {
         for (let i = salesMgr.salesArr.length - 1; i >= 0; i--) {
-            if (!salesMgr.salesArr[i].isSelected) {
+            if (!map.get(`${salesMgr.salesArr[i].id}`)) {
                 salesMgr.salesArr.splice(i, 1);
             }
         }
     }
     else {
-        Global.saleManager.salesArr.forEach((target) => {
-            if (target.isSelected) {
-                salesMgr.salesArr.push(target);
+        map.forEach((target, key) => {
+            if (target) {
+                salesMgr.salesArr.push(Global.saleManager.salesArr[Number(key) - 1]);
             }
         });
     }
@@ -72,43 +78,43 @@ todaySaleBtn.addEventListener('click', () => {
 });
 // 解除ボタンの処理
 lifttBtn.addEventListener('click', () => {
-    localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     salesMgr.salesArr.length = 0;
     createSalesStatusList(Global.saleManager.salesArr);
     updateTotalSalesAndTotalProfit(Global.saleManager);
     lifttBtn.disabled = true;
+    console.log(map);
 });
 // 仕入処理ボタンの処理
 purchasingBtn.addEventListener('click', () => {
-    localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+    setCheckStatusToLocalStorage();
     window.location.href = 'Purchasing.html';
 });
 // 販売処理ボタンの処理
 saleBtn.addEventListener('click', () => {
-    localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+    setCheckStatusToLocalStorage();
     window.location.href = 'Sale.html';
 });
 // 在庫一覧ボタンの処理
 stockListBtn.addEventListener('click', () => {
-    localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
+    setCheckStatusToLocalStorage();
     window.open('StockList.html', '_blank');
 });
 // リストの作成
 function createSalesStatusList(salesArr) {
     deleteTbodyChildren();
-    salesArr.forEach((target) => {
+    salesArr.forEach((target, index) => {
         const tr = document.createElement('tr');
         const tdCheck = document.createElement('td');
         tdCheck.classList.add('check');
         const checkBox = document.createElement('input');
         checkBox.type = 'checkbox';
         checkBox.name = 'check';
-        checkBox.checked = target.isSelected;
+        checkBox.checked = map.get(`${target.id}`);
         // isSelectedの更新
         checkBox.addEventListener('change', () => {
-            checks.forEach((check, index) => {
-                salesArr[index].isSelected = check.checked;
-            });
+            for (let i = 0; i < checks.length; i++) {
+                map.set(`${salesArr[i].id}`, checks[i].checked);
+            }
             checkDisabledBtn();
         });
         tdCheck.appendChild(checkBox);
@@ -149,16 +155,6 @@ function updateTotalSalesAndTotalProfit(salesMgr) {
     totalSales.textContent = `売上合計金額 : ${salesMgr.getTotalSales().toLocaleString()}円`;
     totalProfit.textContent = `利益合計金額 : ${salesMgr.getTotalProfit().toLocaleString()}円`;
 }
-// salesManagerのチェック状態の保持の更新
-function updateCheckStatus() {
-    for (let i = 0; i < Global.saleManager.salesArr.length; i++) {
-        for (let j = 0; j < salesMgr.salesArr.length; j++) {
-            if (Global.saleManager.salesArr[i].id === salesMgr.salesArr[j].id) {
-                Global.saleManager.salesArr[i].isSelected = salesMgr.salesArr[j].isSelected;
-            }
-        }
-    }
-}
 // ボタンの有効無効
 function checkDisabledBtn() {
     let checkCount = 0;
@@ -170,9 +166,13 @@ function checkDisabledBtn() {
 }
 // 絞込み、今日の販売ボタンを押した際の画面更新部分の処理
 function displayUpdate() {
-    updateCheckStatus();
     createSalesStatusList(salesMgr.salesArr);
     updateTotalSalesAndTotalProfit(salesMgr);
     lifttBtn.disabled = false;
+}
+// チェック状態の保存
+function setCheckStatusToLocalStorage() {
+    let items = Array.from(map.entries());
+    localStorage.setItem('map', JSON.stringify(items));
 }
 //# sourceMappingURL=main.js.map

@@ -5,13 +5,12 @@ export class Sale {
     private _product: Product,
     private _saleDate: string,
     private _saleQuantity: number,
-    private _isSelected: boolean,
     private _id: number
   ) {
     this._product = _product;
     this._saleDate = _saleDate;
     this._saleQuantity = _saleQuantity;
-    this._isSelected = _isSelected;
+
     this._id = _id;
   }
 
@@ -25,14 +24,6 @@ export class Sale {
 
   public get saleQuantity(): number {
     return this._saleQuantity;
-  }
-
-  public get isSelected(): boolean {
-    return this._isSelected;
-  }
-
-  public set isSelected(value: boolean) {
-    this._isSelected = value;
   }
 
   public get id(): number {
