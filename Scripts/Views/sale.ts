@@ -5,6 +5,10 @@ import { Sale } from '../Models/sale.js';
 {
   // アラートメッセージ
   const NO_STOCK: string = '在庫数が足りません。';
+  const NOT_NORMAL_VALUE: string = '値が正常ではありません。もう一度お確かめください。';
+  // エラーメッセージ
+  const ABNORMAL_VALUE_ERROR: string = 'The value is abnormal';
+
   // tbodyの取得
   const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
   // 販売数の取得
@@ -20,11 +24,9 @@ import { Sale } from '../Models/sale.js';
   // 配列末尾のidを取得
   let idCount: number = Number(localStorage.getItem('idCount'));
 
-  Global.getStockFromLocalStorage();
-
   // 画面ロード時の処理
   window.onload = function () {
-    deleteTbodyChildren();
+    Global.getStockFromLocalStorage();
     createStockList();
     // チェックボックスの取得(複数選択させない)
     checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
@@ -61,21 +63,21 @@ import { Sale } from '../Models/sale.js';
 
     // 在庫数の更新
     try {
+      if (Number(saleQuantity.value) <= 0) {
+        throw new Error(ABNORMAL_VALUE_ERROR);
+      }
       Global.stockManager.stockArr[index].stock -= Number(saleQuantity.value);
       window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
       // ユーザー入力部分の保存
       idCount++;
       const sale: Sale = new Sale(Global.stockManager.stockArr[index], saleDate.value, Number(saleQuantity.value), false, idCount);
-      // const sale: Sales = {
-      //   product: Global.stockManager.stockArr[index],
-      //   saleDate: saleDate.value,
-      //   saleQuantity: Number(saleQuantity.value),
-      //   selected: false,
-      //   id: idCount,
-      // };
       Global.saleManager.add(sale);
-    } catch {
-      alert(NO_STOCK);
+    } catch (e) {
+      if (e instanceof RangeError) {
+        alert(NO_STOCK);
+      } else if (e instanceof Error) {
+        alert(NOT_NORMAL_VALUE);
+      }
       return;
     }
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
@@ -113,13 +115,6 @@ import { Sale } from '../Models/sale.js';
       tr.appendChild(tdStock);
       tbody?.appendChild(tr);
     });
-  }
-
-  // tbody内の削除
-  function deleteTbodyChildren(): void {
-    while (tbody?.firstChild) {
-      tbody.removeChild(tbody.firstChild);
-    }
   }
 
   // テキストボックス入力の有効無効

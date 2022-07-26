@@ -6,11 +6,9 @@ const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
 // 閉じるボタンの取得
 const closeBtn = document.getElementById('close') as HTMLButtonElement;
 
-Global.getStockFromLocalStorage();
-
 // 画面ロード時の処理
 window.onload = function () {
-  deleteTbodyChildren();
+  Global.getStockFromLocalStorage();
   createStockList();
 };
 
@@ -20,6 +18,11 @@ window.addEventListener('storage', (event) => {
   if (event.key === 'stock') {
     location.reload();
   }
+});
+
+// 閉じるボタンの処理
+closeBtn.addEventListener('click', () => {
+  window.close();
 });
 
 // 在庫一覧の作成
@@ -47,13 +50,3 @@ function createStockList(): void {
   });
 }
 
-// tbody内の削除
-function deleteTbodyChildren(): void {
-  while (tbody?.firstChild) {
-    tbody.removeChild(tbody.firstChild);
-  }
-}
-// 閉じるボタンの処理
-closeBtn.addEventListener('click', () => {
-  window.close();
-});

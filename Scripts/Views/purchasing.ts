@@ -22,9 +22,11 @@ import { Global } from '../Models/global.js';
   // 戻るボタンの取得
   const returnBtn = document.getElementById('return') as HTMLButtonElement;
 
-  Global.getStockFromLocalStorage();
-
-  updateDisabledDecisionBtn();
+  // 画面ロード時の処理
+  window.onload = function () {
+    Global.getStockFromLocalStorage();
+    updateDisabledDecisionBtn();
+  };
 
   // ボタンの有効無効判定
   window.addEventListener('change', () => {

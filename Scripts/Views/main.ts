@@ -22,10 +22,8 @@ const totalSales = document.getElementById('totalSales') as HTMLElement;
 const totalProfit = document.getElementById('totalProfit') as HTMLElement;
 // チェックボックスの取得
 let checks: NodeListOf<HTMLInputElement>;
-
 // 表示用のsalesマネージャー配列
 let salesMgr: SalesManager = new SalesManager();
-
 // 今日の日付を取得
 const date: Date = new Date();
 const today: string = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice(-2)}` + '-' + `${('00' + date.getDate()).slice(-2)}`;
