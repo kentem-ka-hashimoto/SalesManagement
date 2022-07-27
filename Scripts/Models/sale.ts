@@ -1,20 +1,15 @@
-import { Product } from './product.js';
+import { Purchasing } from './purchasing.js';
 
 export class Sale {
-  constructor(
-    private _product: Product,
-    private _saleDate: string,
-    private _saleQuantity: number,
-    private _id: number
-  ) {
-    this._product = _product;
+  constructor(private _purchasing: Purchasing, private _saleDate: string, private _saleQuantity: number, private _id: number) {
+    this._purchasing = _purchasing;
     this._saleDate = _saleDate;
     this._saleQuantity = _saleQuantity;
     this._id = _id;
   }
 
-  public get product(): Product {
-    return this._product;
+  public get purchasing(): Purchasing {
+    return this._purchasing;
   }
 
   public get saleDate(): string {

@@ -1,5 +1,6 @@
 import { Product } from '../Models/product.js';
 import { Global } from '../Models/global.js';
+import { Purchasing } from '../Models/purchasing.js';
 
 // tbodyの取得
 const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
@@ -27,10 +28,10 @@ closeBtn.addEventListener('click', () => {
 
 // 在庫一覧の作成
 function createStockList(): void {
-  Global.stockManager.stockArr.forEach((target: Product) => {
+  Global.stockManager.stockArr.forEach((target: Purchasing) => {
     const tr: HTMLTableRowElement = document.createElement('tr');
     const tdName: HTMLTableCellElement = document.createElement('td');
-    tdName.textContent = target.productName;
+    tdName.textContent = target.product.name;
     const tdPurchaseDate: HTMLTableCellElement = document.createElement('td');
     tdPurchaseDate.textContent = target.purchaseDate;
     const tdPurchasePrice: HTMLTableCellElement = document.createElement('td');
@@ -49,4 +50,3 @@ function createStockList(): void {
     tbody?.appendChild(tr);
   });
 }
-

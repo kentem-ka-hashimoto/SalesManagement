@@ -14,6 +14,10 @@ export class Purchasing {
     this._purchasePrice = _purchasePrice;
     this._sellingPrice = _sellingPrice;
     this._stock = _stock;
+
+    if (this.checkValue(this._purchasePrice) || this.checkValue(this._sellingPrice) || this._sellingPrice <= this._purchasePrice) {
+      throw new Error(this.ABNORMAL_VALUE_ERROR);
+    }
   }
 
   public get product(): Product {

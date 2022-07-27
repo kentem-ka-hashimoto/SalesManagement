@@ -1,6 +1,6 @@
 import { Global } from '../Models/global.js';
-import { Product } from '../Models/product.js';
 import { Sale } from '../Models/sale.js';
+import { Purchasing } from '../Models/purchasing.js';
 
 {
   // アラートメッセージ
@@ -66,9 +66,9 @@ import { Sale } from '../Models/sale.js';
       if (Number(saleQuantity.value) <= 0) {
         throw new Error(ABNORMAL_VALUE_ERROR);
       }
-      Global.stockManager.stockArr[index].stock -= Number(saleQuantity.value);//在庫を減らす
+      Global.stockManager.stockArr[index].stock -= Number(saleQuantity.value); //在庫を減らす
       window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
-      // new Sale(Product、販売日、販売数、ID)
+      // new Sale(Purchasing、販売日、販売数、ID)
       idCount++;
       const sale: Sale = new Sale(Global.stockManager.stockArr[index], saleDate.value, Number(saleQuantity.value), idCount);
       Global.saleManager.add(sale);
@@ -92,14 +92,14 @@ import { Sale } from '../Models/sale.js';
 
   // 一覧の表示
   function createStockList(): void {
-    Global.stockManager.stockArr.forEach((target: Product) => {
+    Global.stockManager.stockArr.forEach((target: Purchasing) => {
       const tr: HTMLTableRowElement = document.createElement('tr');
       const tdCheck: HTMLTableCellElement = document.createElement('td');
       tdCheck.classList.add('check');
       const checkBox: HTMLInputElement = document.createElement('input');
       checkBox.type = 'checkbox';
       checkBox.name = 'check';
-      
+
       // 入力部分の有効無効判定
       checkBox.addEventListener('change', () => {
         updateDisabledInput();
@@ -107,7 +107,7 @@ import { Sale } from '../Models/sale.js';
 
       tdCheck.appendChild(checkBox);
       const tdName: HTMLTableCellElement = document.createElement('td');
-      tdName.textContent = target.productName;
+      tdName.textContent = target.product.name;
       const tdStock: HTMLTableCellElement = document.createElement('td');
       tdStock.textContent = `${target.stock}個`;
 

@@ -14,7 +14,7 @@ export class SalesManager {
   public getTotalSales(): number {
     let sum: number = 0;
     this._salesArr.forEach((target) => {
-      sum += target.product.sellingPrice * target.saleQuantity;
+      sum += target.purchasing.sellingPrice * target.saleQuantity;
     });
     return sum;
   }
@@ -22,7 +22,7 @@ export class SalesManager {
   public getTotalProfit(): number {
     let totalCost: number = 0;
     this._salesArr.forEach((target) => {
-      totalCost += target.product.purchasePrice * target.saleQuantity;
+      totalCost += target.purchasing.purchasePrice * target.saleQuantity;
     });
     return this.getTotalSales() - totalCost;
   }

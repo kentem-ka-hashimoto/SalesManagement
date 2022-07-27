@@ -1,4 +1,5 @@
 import { Global } from '../Models/global.js';
+import { Sale } from '../Models/sale.js';
 import { SalesManager } from '../Models/salesManager.js';
 
 // tbodyの取得
@@ -96,8 +97,7 @@ stockListBtn.addEventListener('click', () => {
 // リストの作成
 function createSalesStatusList(): void {
   deleteTbodyChildren();
-
-  saleMgr.salesArr.forEach((target) => {
+  saleMgr.salesArr.forEach((target: Sale) => {
     const tr: HTMLTableRowElement = document.createElement('tr');
     const tdCheck: HTMLTableCellElement = document.createElement('td');
     tdCheck.classList.add('check');
@@ -117,19 +117,19 @@ function createSalesStatusList(): void {
     tdCheck.appendChild(checkBox);
 
     const tdName: HTMLTableCellElement = document.createElement('td');
-    tdName.textContent = target.product.productName;
+    tdName.textContent = target.purchasing.product.name;
     const tdSellingPrice: HTMLTableCellElement = document.createElement('td');
-    tdSellingPrice.textContent = `${target.product.sellingPrice.toLocaleString()}円`;
+    tdSellingPrice.textContent = `${target.purchasing.sellingPrice.toLocaleString()}円`;
     const tdPurchasePrice: HTMLTableCellElement = document.createElement('td');
-    tdPurchasePrice.textContent = `${target.product.purchasePrice.toLocaleString()}円`;
+    tdPurchasePrice.textContent = `${target.purchasing.purchasePrice.toLocaleString()}円`;
     const tdPurchaseDate: HTMLTableCellElement = document.createElement('td');
-    tdPurchaseDate.textContent = target.product.purchaseDate;
+    tdPurchaseDate.textContent = target.purchasing.purchaseDate;
     const tdSalesDate: HTMLTableCellElement = document.createElement('td');
     tdSalesDate.textContent = target.saleDate;
     const tdQuantity: HTMLTableCellElement = document.createElement('td');
     tdQuantity.textContent = `${target.saleQuantity.toLocaleString()}個`;
     const tdEarnings: HTMLTableCellElement = document.createElement('td');
-    tdEarnings.textContent = `${(target.product.sellingPrice * target.saleQuantity).toLocaleString()}円`;
+    tdEarnings.textContent = `${(target.purchasing.sellingPrice * target.saleQuantity).toLocaleString()}円`;
 
     tr.appendChild(tdCheck);
     tr.appendChild(tdName);

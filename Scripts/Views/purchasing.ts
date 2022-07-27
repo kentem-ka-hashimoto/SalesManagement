@@ -1,4 +1,5 @@
 import { Product } from '../Models/product.js';
+import { Purchasing } from '../Models/purchasing.js';
 import { Global } from '../Models/global.js';
 
 {
@@ -22,15 +23,17 @@ import { Global } from '../Models/global.js';
   // 戻るボタンの取得
   const returnBtn = document.getElementById('return') as HTMLButtonElement;
 
+  const product: Product = new Product('焼肉弁当');
+
   // 画面ロード時の処理
   window.onload = function () {
     Global.getStockFromLocalStorage();
-    updateDisabledDecisionBtn();
+    // updateDisabledDecisionBtn();
   };
 
   // ボタンの有効無効判定
   window.addEventListener('change', () => {
-    updateDisabledDecisionBtn();
+    // updateDisabledDecisionBtn();
   });
 
   // 決定ボタンの処理
@@ -39,15 +42,15 @@ import { Global } from '../Models/global.js';
       if (Number(purchaseQuantity.value) <= 0) {
         throw new Error(ABNORMAL_VALUE_ERROR);
       }
-      // new Product(商品名、仕入日、仕入価格、販売価格、仕入数)
-      const product: Product = new Product(
-        productName.value,
+      // new Purchasing(商品、仕入日、仕入価格、販売価格、仕入数)
+      const purchasing: Purchasing = new Purchasing(
+        product,
         purchaseDate.value,
         Number(purchasePrice.value),
         Number(sellingPrice.value),
         Number(purchaseQuantity.value)
       );
-      Global.stockManager.add(product);
+      Global.stockManager.add(purchasing);
     } catch {
       alert(NOT_NORMAL_VALUE);
       return;

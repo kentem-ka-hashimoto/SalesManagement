@@ -2,6 +2,7 @@ import { StockManager } from '../Models/stockManager.js';
 import { SalesManager } from '../Models/salesManager.js';
 import { Product } from './product.js';
 import { Sale } from './sale.js';
+import { Purchasing } from './purchasing.js';
 
 export class Global {
   private static _stockManager: StockManager;
@@ -26,7 +27,13 @@ export class Global {
     if (items) {
       const stock: string[] = JSON.parse(items);
       stock.forEach((target: any) => {
-        const product: Product = new Product(target._productName, target._purchaseDate, target._purchasePrice, target._sellingPrice, target._stock);
+        const product: Purchasing = new Purchasing(
+          new Product(target._product._name),
+          target._purchaseDate,
+          target._purchasePrice,
+          target._sellingPrice,
+          target._stock
+        );
         Global.stockManager.add(product);
       });
     }
@@ -40,12 +47,12 @@ export class Global {
       salesStatus.forEach((target: any) => {
         idCount++;
         const saleData: Sale = new Sale(
-          new Product(
-            target._product._productName,
-            target._product._purchaseDate,
-            target._product._purchasePrice,
-            target._product._sellingPrice,
-            target._product._stock
+          new Purchasing(
+            new Product(target._purchasing._product._name),
+            target._purchasing._purchaseDate,
+            target._purchasing._purchasePrice,
+            target._purchasing._sellingPrice,
+            target._purchasing._stock
           ),
           target._saleDate,
           target._saleQuantity,
