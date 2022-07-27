@@ -27,14 +27,14 @@ export class Global {
     if (items) {
       const stock: string[] = JSON.parse(items);
       stock.forEach((target: any) => {
-        const product: Purchasing = new Purchasing(
+        const purchasing: Purchasing = new Purchasing(
           new Product(target._product._name),
           target._purchaseDate,
           target._purchasePrice,
           target._sellingPrice,
           target._stock
         );
-        Global.stockManager.add(product);
+        Global.stockManager.add(purchasing);
       });
     }
   }
