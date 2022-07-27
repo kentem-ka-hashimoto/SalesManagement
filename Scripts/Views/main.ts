@@ -1,4 +1,5 @@
 import { Global } from '../Models/global.js';
+import { SalesManager } from '../Models/salesManager.js';
 
 // tbodyの取得
 const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
@@ -22,6 +23,8 @@ const totalProfit = document.getElementById('totalProfit') as HTMLElement;
 let checks: NodeListOf<HTMLInputElement>;
 // mapを用意
 let map: Map<string, boolean> = new Map();
+// 表示用
+let saleMgr: SalesManager = new SalesManager();
 
 // 今日の日付を取得(販売日の入力部分がtype=dateのため文字列の状態に)
 const date: Date = new Date();
@@ -30,6 +33,10 @@ const today: string = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1
 // 画面ロード時の処理
 window.onload = function () {
   Global.getSalesStatusFromLocalStorage();
+  Global.saleManager.salesArr.forEach((target) => {
+    saleMgr.add(target);
+  });
+
   const items: string | null = localStorage.getItem('map');
   if (items) {
     map = new Map(JSON.parse(items));
@@ -42,9 +49,9 @@ window.onload = function () {
 
 // 絞込みボタンの処理
 narrowingBtn.addEventListener('click', () => {
-  for (let i = Global.saleManager.salesArr.length - 1; i >= 0; i--) {
-    if (!map.get(`${Global.saleManager.salesArr[i].id}`)) {
-      Global.saleManager.salesArr.splice(i, 1); //(チェック状態でないものは配列から削除する)
+  for (let i = saleMgr.salesArr.length - 1; i >= 0; i--) {
+    if (!map.get(`${saleMgr.salesArr[i].id}`)) {
+      saleMgr.salesArr.splice(i, 1); //(チェック状態でないものは配列から削除する)
     }
   }
   displayUpdate();
@@ -52,9 +59,9 @@ narrowingBtn.addEventListener('click', () => {
 
 // 今日の販売ボタンの処理
 todaySaleBtn.addEventListener('click', () => {
-  for (let i = Global.saleManager.salesArr.length - 1; i >= 0; i--) {
-    if (Global.saleManager.salesArr[i].saleDate !== today) {
-      Global.saleManager.salesArr.splice(i, 1); //(今日でないものは配列から削除する)
+  for (let i = saleMgr.salesArr.length - 1; i >= 0; i--) {
+    if (saleMgr.salesArr[i].saleDate !== today) {
+      saleMgr.salesArr.splice(i, 1); //(今日でないものは配列から削除する)
     }
   }
   displayUpdate();
@@ -63,8 +70,10 @@ todaySaleBtn.addEventListener('click', () => {
 // 解除ボタンの処理
 lifttBtn.addEventListener('click', () => {
   setCheckStatusToLocalStorage();
-  Global.saleManager.clearArr();
-  Global.getSalesStatusFromLocalStorage();
+  saleMgr.clearArr();
+  Global.saleManager.salesArr.forEach((target) => {
+    saleMgr.add(target);
+  });
   createSalesStatusList();
   updateTotalSalesAndTotalProfit();
   lifttBtn.disabled = true;
@@ -88,7 +97,7 @@ stockListBtn.addEventListener('click', () => {
 function createSalesStatusList(): void {
   deleteTbodyChildren();
 
-  Global.saleManager.salesArr.forEach((target) => {
+  saleMgr.salesArr.forEach((target) => {
     const tr: HTMLTableRowElement = document.createElement('tr');
     const tdCheck: HTMLTableCellElement = document.createElement('td');
     tdCheck.classList.add('check');
@@ -101,7 +110,7 @@ function createSalesStatusList(): void {
     checkBox.addEventListener('change', () => {
       for (let i = 0; i < checks.length; i++) {
         //表示されているi番目の要素のidを見て、チェック状態を上書きする
-        map.set(`${Global.saleManager.salesArr[i].id}`, checks[i].checked);
+        map.set(`${saleMgr.salesArr[i].id}`, checks[i].checked);
       }
       checkDisabledBtn();
     });
@@ -146,8 +155,8 @@ function deleteTbodyChildren(): void {
 
 // 金額表示
 function updateTotalSalesAndTotalProfit(): void {
-  totalSales.textContent = `売上合計金額 : ${Global.saleManager.getTotalSales().toLocaleString()}円`;
-  totalProfit.textContent = `利益合計金額 : ${Global.saleManager.getTotalProfit().toLocaleString()}円`;
+  totalSales.textContent = `売上合計金額 : ${saleMgr.getTotalSales().toLocaleString()}円`;
+  totalProfit.textContent = `利益合計金額 : ${saleMgr.getTotalProfit().toLocaleString()}円`;
 }
 
 // ボタンの有効無効
