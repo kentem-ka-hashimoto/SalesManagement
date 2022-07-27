@@ -23,6 +23,7 @@ import { Purchasing } from '../Models/purchasing.js';
   let checks: NodeListOf<HTMLInputElement>;
   // 配列末尾のidを取得
   let idCount: number = Number(localStorage.getItem('idCount'));
+  Global.getSalesStatusFromLocalStorage();
 
   // 画面ロード時の処理
   window.onload = function () {
@@ -51,7 +52,6 @@ import { Purchasing } from '../Models/purchasing.js';
 
   // 決定ボタンの処理
   decisionBtn.addEventListener('click', () => {
-    Global.getSalesStatusFromLocalStorage();
     // チェックのインデックス取得
     let index: number = 0;
     checks.forEach((check, checks_index) => {
@@ -75,10 +75,11 @@ import { Purchasing } from '../Models/purchasing.js';
     } catch (e) {
       if (e instanceof RangeError) {
         alert(NO_STOCK);
+        return;
       } else if (e instanceof Error) {
         alert(NOT_NORMAL_VALUE);
+        return;
       }
-      return;
     }
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     localStorage.setItem('idCount', `${idCount}`);

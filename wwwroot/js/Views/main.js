@@ -8,6 +8,8 @@ const purchasingBtn = document.getElementById('purchasing');
 const saleBtn = document.getElementById('sale');
 // 在庫一覧ボタンの取得
 const stockListBtn = document.getElementById('stockList');
+// 在庫一覧ボタンの取得
+const registerBtn = document.getElementById('register');
 // 絞込みボタンの取得
 const narrowingBtn = document.getElementById('narrowing');
 // 今日の販売ボタンの取得
@@ -83,6 +85,10 @@ saleBtn.addEventListener('click', () => {
 stockListBtn.addEventListener('click', () => {
     setCheckStatusToLocalStorage();
     window.open('StockList.html', '_blank');
+});
+// 商品登録ボタンの処理
+registerBtn.addEventListener('click', () => {
+    transitionPage('register.html');
 });
 // リストの作成
 function createSalesStatusList() {
