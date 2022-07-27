@@ -66,9 +66,9 @@ import { Sale } from '../Models/sale.js';
       if (Number(saleQuantity.value) <= 0) {
         throw new Error(ABNORMAL_VALUE_ERROR);
       }
-      Global.stockManager.stockArr[index].stock -= Number(saleQuantity.value);
+      Global.stockManager.stockArr[index].stock -= Number(saleQuantity.value);//在庫を減らす
       window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
-      // ユーザー入力部分の保存
+      // new Sale(Product、販売日、販売数、ID)
       idCount++;
       const sale: Sale = new Sale(Global.stockManager.stockArr[index], saleDate.value, Number(saleQuantity.value), idCount);
       Global.saleManager.add(sale);
@@ -82,12 +82,12 @@ import { Sale } from '../Models/sale.js';
     }
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     localStorage.setItem('idCount', `${idCount}`);
-    window.location.href = 'Main.html';
+    RedirectMainPage();
   });
 
   // 戻るボタンの処理
   returnBtn.addEventListener('click', () => {
-    window.location.href = 'Main.html';
+    RedirectMainPage();
   });
 
   // 一覧の表示
@@ -99,6 +99,7 @@ import { Sale } from '../Models/sale.js';
       const checkBox: HTMLInputElement = document.createElement('input');
       checkBox.type = 'checkbox';
       checkBox.name = 'check';
+      
       // 入力部分の有効無効判定
       checkBox.addEventListener('change', () => {
         updateDisabledInput();
@@ -130,5 +131,10 @@ import { Sale } from '../Models/sale.js';
   // 決定ボタンの有効無効
   function updateDisabledDecisionBtn(): void {
     decisionBtn.disabled = saleQuantity.value === '' || saleDate.value === '';
+  }
+
+  // メイン画面遷移
+  function RedirectMainPage(): void {
+    window.location.href = 'Main.html';
   }
 }

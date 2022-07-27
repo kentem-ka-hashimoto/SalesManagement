@@ -23,7 +23,7 @@ let checks: NodeListOf<HTMLInputElement>;
 // mapを用意
 let map: Map<string, boolean> = new Map();
 
-// 今日の日付を取得
+// 今日の日付を取得(販売日の入力部分がtype=dateのため文字列の状態に)
 const date: Date = new Date();
 const today: string = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice(-2)}` + '-' + `${('00' + date.getDate()).slice(-2)}`;
 
@@ -40,21 +40,21 @@ window.onload = function () {
   lifttBtn.disabled = true;
 };
 
-// 絞込みボタンの処理(チェック状態でないものは配列から削除する)
+// 絞込みボタンの処理
 narrowingBtn.addEventListener('click', () => {
   for (let i = Global.saleManager.salesArr.length - 1; i >= 0; i--) {
     if (!map.get(`${Global.saleManager.salesArr[i].id}`)) {
-      Global.saleManager.salesArr.splice(i, 1);
+      Global.saleManager.salesArr.splice(i, 1); //(チェック状態でないものは配列から削除する)
     }
   }
   displayUpdate();
 });
 
-// 今日の販売ボタンの処理(今日でないものは配列から削除する)
+// 今日の販売ボタンの処理
 todaySaleBtn.addEventListener('click', () => {
   for (let i = Global.saleManager.salesArr.length - 1; i >= 0; i--) {
     if (Global.saleManager.salesArr[i].saleDate !== today) {
-      Global.saleManager.salesArr.splice(i, 1);
+      Global.saleManager.salesArr.splice(i, 1); //(今日でないものは配列から削除する)
     }
   }
   displayUpdate();
@@ -97,9 +97,10 @@ function createSalesStatusList(): void {
     checkBox.name = 'check';
     checkBox.checked = map.get(`${target.id}`) as boolean;
 
-    // isSelectedの更新
+    // チェック状態の更新
     checkBox.addEventListener('change', () => {
       for (let i = 0; i < checks.length; i++) {
+        //表示されているi番目の要素のidを見て、チェック状態を上書きする
         map.set(`${Global.saleManager.salesArr[i].id}`, checks[i].checked);
       }
       checkDisabledBtn();
@@ -132,6 +133,7 @@ function createSalesStatusList(): void {
 
     tbody?.appendChild(tr);
   });
+  // 表示されたSales配列と同じlengthになる
   checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
 }
 

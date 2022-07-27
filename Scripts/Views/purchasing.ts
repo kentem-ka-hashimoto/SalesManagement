@@ -39,6 +39,7 @@ import { Global } from '../Models/global.js';
       if (Number(purchaseQuantity.value) <= 0) {
         throw new Error(ABNORMAL_VALUE_ERROR);
       }
+      // new Product(商品名、仕入日、仕入価格、販売価格、仕入数)
       const product: Product = new Product(
         productName.value,
         purchaseDate.value,
@@ -52,21 +53,27 @@ import { Global } from '../Models/global.js';
       return;
     }
     window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
-    window.location.href = 'Main.html';
+    RedirectMainPage();
   });
 
   // 戻るボタンの処理
   returnBtn.addEventListener('click', () => {
-    window.location.href = 'Main.html';
+    RedirectMainPage();
   });
 
   // 決定ボタンの有効無効
   function updateDisabledDecisionBtn(): void {
+    // どこかが空欄の場合ボタンを押せない
     decisionBtn.disabled =
       productName.value === '' ||
       purchaseQuantity.value === '' ||
       purchasePrice.value === '' ||
       sellingPrice.value === '' ||
       purchaseDate.value === '';
+  }
+
+  // メイン画面遷移
+  function RedirectMainPage(): void {
+    window.location.href = 'Main.html';
   }
 }
