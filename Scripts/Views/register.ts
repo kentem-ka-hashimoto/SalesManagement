@@ -88,13 +88,6 @@ import { Product } from '../Models/product.js';
     checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
   }
 
-  // tbody内の削除
-  function deleteTbodyChildren(): void {
-    while (tbody?.firstChild) {
-      tbody.removeChild(tbody.firstChild);
-    }
-  }
-
   // 削除ボタンの有効無効
   function updateDisabledDeletBtn(): void {
     let checkCount: number = 0;

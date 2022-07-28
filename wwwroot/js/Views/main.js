@@ -1,5 +1,4 @@
 import { Global } from '../Models/global.js';
-import { SalesManager } from '../Models/salesManager.js';
 // tbodyの取得
 const tbody = document.querySelector('tbody');
 // 仕入処理ボタンの取得
@@ -25,16 +24,14 @@ let checks;
 // mapを用意
 let map = new Map();
 // 表示用
-let saleMgr = new SalesManager();
+let salesArr = [];
 // 今日の日付を取得(販売日の入力部分がtype=dateのため文字列の状態に)
 const date = new Date();
 const today = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice(-2)}` + '-' + `${('00' + date.getDate()).slice(-2)}`;
 // 画面ロード時の処理
 window.onload = function () {
     Global.getSalesStatusFromLocalStorage();
-    Global.saleManager.salesArr.forEach((target) => {
-        saleMgr.add(target);
-    });
+    salesArr = Global.saleManager.salesArr.concat();
     const items = localStorage.getItem('map');
     if (items) {
         map = new Map(JSON.parse(items));
@@ -46,29 +43,19 @@ window.onload = function () {
 };
 // 絞込みボタンの処理
 narrowingBtn.addEventListener('click', () => {
-    for (let i = saleMgr.salesArr.length - 1; i >= 0; i--) {
-        if (!map.get(`${saleMgr.salesArr[i].id}`)) {
-            saleMgr.salesArr.splice(i, 1); //(チェック状態でないものは配列から削除する)
-        }
-    }
+    salesArr = salesArr.filter((sale) => map.get(`${sale.id}`));
     displayUpdate();
 });
 // 今日の販売ボタンの処理
 todaySaleBtn.addEventListener('click', () => {
-    for (let i = saleMgr.salesArr.length - 1; i >= 0; i--) {
-        if (saleMgr.salesArr[i].saleDate !== today) {
-            saleMgr.salesArr.splice(i, 1); //(今日でないものは配列から削除する)
-        }
-    }
+    salesArr = salesArr.filter((sale, index) => salesArr[index].saleDate === today);
     displayUpdate();
 });
 // 解除ボタンの処理
 lifttBtn.addEventListener('click', () => {
     setCheckStatusToLocalStorage();
-    saleMgr.clearArr();
-    Global.saleManager.salesArr.forEach((target) => {
-        saleMgr.add(target);
-    });
+    Global.saleManager.clearArr(salesArr);
+    salesArr = Global.saleManager.salesArr.concat();
     createSalesStatusList();
     updateTotalSalesAndTotalProfit();
     lifttBtn.disabled = true;
@@ -93,37 +80,38 @@ registerBtn.addEventListener('click', () => {
 // リストの作成
 function createSalesStatusList() {
     deleteTbodyChildren();
-    saleMgr.salesArr.forEach((target) => {
+    salesArr.forEach((item) => {
         const tr = document.createElement('tr');
         const tdCheck = document.createElement('td');
         tdCheck.classList.add('check');
         const checkBox = document.createElement('input');
         checkBox.type = 'checkbox';
         checkBox.name = 'check';
-        checkBox.checked = map.get(`${target.id}`);
+        const target = map.get(`${item.id}`);
+        checkBox.checked = target === undefined ? false : target;
         // チェック状態の更新
         checkBox.addEventListener('change', () => {
-            for (let i = 0; i < checks.length; i++) {
-                //表示されているi番目の要素のidを見て、チェック状態を上書きする
-                map.set(`${saleMgr.salesArr[i].id}`, checks[i].checked);
-            }
+            //表示されているi番目の要素のidを見て、チェック状態を上書きする
+            checks.forEach((check, index) => {
+                map.set(`${salesArr[index].id}`, check.checked);
+            });
             checkDisabledBtn();
         });
         tdCheck.appendChild(checkBox);
         const tdName = document.createElement('td');
-        tdName.textContent = target.purchasing.product.name;
+        tdName.textContent = item.purchasing.product.name;
         const tdSellingPrice = document.createElement('td');
-        tdSellingPrice.textContent = `${target.purchasing.sellingPrice.toLocaleString()}円`;
+        tdSellingPrice.textContent = `${item.purchasing.sellingPrice.toLocaleString()}円`;
         const tdPurchasePrice = document.createElement('td');
-        tdPurchasePrice.textContent = `${target.purchasing.purchasePrice.toLocaleString()}円`;
+        tdPurchasePrice.textContent = `${item.purchasing.purchasePrice.toLocaleString()}円`;
         const tdPurchaseDate = document.createElement('td');
-        tdPurchaseDate.textContent = target.purchasing.purchaseDate;
+        tdPurchaseDate.textContent = item.purchasing.purchaseDate;
         const tdSalesDate = document.createElement('td');
-        tdSalesDate.textContent = target.saleDate;
+        tdSalesDate.textContent = item.saleDate;
         const tdQuantity = document.createElement('td');
-        tdQuantity.textContent = `${target.saleQuantity.toLocaleString()}個`;
+        tdQuantity.textContent = `${item.saleQuantity.toLocaleString()}個`;
         const tdEarnings = document.createElement('td');
-        tdEarnings.textContent = `${(target.purchasing.sellingPrice * target.saleQuantity).toLocaleString()}円`;
+        tdEarnings.textContent = `${(item.purchasing.sellingPrice * item.saleQuantity).toLocaleString()}円`;
         tr.appendChild(tdCheck);
         tr.appendChild(tdName);
         tr.appendChild(tdSellingPrice);
@@ -145,8 +133,8 @@ function deleteTbodyChildren() {
 }
 // 金額表示
 function updateTotalSalesAndTotalProfit() {
-    totalSales.textContent = `売上合計金額 : ${saleMgr.getTotalSales().toLocaleString()}円`;
-    totalProfit.textContent = `利益合計金額 : ${saleMgr.getTotalProfit().toLocaleString()}円`;
+    totalSales.textContent = `売上合計金額 : ${Global.saleManager.getTotalSales(salesArr).toLocaleString()}円`;
+    totalProfit.textContent = `利益合計金額 : ${Global.saleManager.getTotalProfit(salesArr).toLocaleString()}円`;
 }
 // ボタンの有効無効
 function checkDisabledBtn() {
