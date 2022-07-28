@@ -30,7 +30,6 @@ import { Purchasing } from '../Models/purchasing.js';
     Global.getStockFromLocalStorage();
     createStockList();
     // チェックボックスの取得(複数選択させない)
-    checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
     checks.forEach((check) => {
       check.addEventListener('change', () => {
         if (check.checked) {
@@ -117,6 +116,7 @@ import { Purchasing } from '../Models/purchasing.js';
       tr.appendChild(tdStock);
       tbody?.appendChild(tr);
     });
+    checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
   }
 
   // テキストボックス入力の有効無効
