@@ -55,7 +55,7 @@ narrowingBtn.addEventListener('click', () => {
 
 // 今日の販売ボタンの処理
 todaySaleBtn.addEventListener('click', () => {
-  salesArr = salesArr.filter((sale, index) => salesArr[index].saleDate === today);
+  salesArr = salesArr.filter((sale) => sale.saleDate === today);
   displayUpdate();
 });
 

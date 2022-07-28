@@ -47,6 +47,17 @@ td.check {
   width: 50px;
 }
 
+td.saleQuantity {
+  text-align: center;
+  width: 20%;
+}
+
+input[name='saleQuantity'] {
+  width: 80%;
+  height: 30px;
+  font-size: 18px;
+}
+
 footer {
   margin-top: 30px;
 }

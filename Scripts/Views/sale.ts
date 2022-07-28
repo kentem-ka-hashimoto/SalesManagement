@@ -21,6 +21,8 @@ import { Purchasing } from '../Models/purchasing.js';
   const returnBtn = document.getElementById('return') as HTMLButtonElement;
   // チェックボックスの取得
   let checks: NodeListOf<HTMLInputElement>;
+  // 販売数の取得
+  let saleQuantityArr: NodeListOf<HTMLInputElement>;
   // 配列末尾のidを取得
   let idCount: number = Number(localStorage.getItem('idCount'));
   Global.getSalesStatusFromLocalStorage();
@@ -29,17 +31,6 @@ import { Purchasing } from '../Models/purchasing.js';
   window.onload = function () {
     Global.getStockFromLocalStorage();
     createStockList();
-    // チェックボックスの取得(複数選択させない)
-    checks.forEach((check) => {
-      check.addEventListener('change', () => {
-        if (check.checked) {
-          checks.forEach((check) => {
-            check.checked = false;
-          });
-          check.checked = true;
-        }
-      });
-    });
     updateDisabledInput();
     updateDisabledDecisionBtn();
   };
@@ -103,6 +94,9 @@ import { Purchasing } from '../Models/purchasing.js';
       // 入力部分の有効無効判定
       checkBox.addEventListener('change', () => {
         updateDisabledInput();
+        saleQuantityArr.forEach((a) => {
+          console.log(a.value);
+        });
       });
 
       tdCheck.appendChild(checkBox);
@@ -111,23 +105,38 @@ import { Purchasing } from '../Models/purchasing.js';
       const tdStock: HTMLTableCellElement = document.createElement('td');
       tdStock.textContent = `${target.stock}個`;
 
+      const tdQuantity: HTMLTableCellElement = document.createElement('td');
+      tdQuantity.classList.add('saleQuantity');
+      const tdTextBox: HTMLInputElement = document.createElement('input');
+      tdTextBox.type = 'number';
+      tdTextBox.name = 'saleQuantity';
+      tdQuantity.appendChild(tdTextBox);
+
       tr.appendChild(tdCheck);
       tr.appendChild(tdName);
       tr.appendChild(tdStock);
+      tr.appendChild(tdQuantity);
       tbody?.appendChild(tr);
     });
     checks = document.getElementsByName('check') as NodeListOf<HTMLInputElement>;
+    saleQuantityArr = document.getElementsByName('saleQuantity') as NodeListOf<HTMLInputElement>;
   }
 
   // テキストボックス入力の有効無効
   function updateDisabledInput(): void {
     let checkCount: number = 0;
-    checks.forEach((check) => {
+    checks.forEach((check, index) => {
+      if (!check.checked) {
+        saleQuantityArr[index].value = '';
+      }
+      saleQuantityArr[index].disabled = !check.checked;
       if (check.checked) checkCount++;
       saleQuantity.disabled = checkCount === 0;
       saleDate.disabled = checkCount === 0;
     });
   }
+
+  // 販売数テキストボックス部分の有効無
 
   // 決定ボタンの有効無効
   function updateDisabledDecisionBtn(): void {
