@@ -8,8 +8,10 @@ import { Global } from '../Models/global.js';
   // エラーメッセージ
   const ABNORMAL_VALUE_ERROR: string = 'The value is abnormal';
 
-  // 商品名の取得
-  const productName = document.getElementById('productName') as HTMLInputElement;
+  // 商品名コンボボックスの取得
+  const products = document.getElementById('products') as HTMLSelectElement;
+  // 選択肢入れる変数
+  let choice: NodeListOf<HTMLOptionElement>;
   // 仕入数の取得
   const purchaseQuantity = document.getElementById('purchaseQuantity') as HTMLInputElement;
   // 仕入価格の取得
@@ -23,21 +25,30 @@ import { Global } from '../Models/global.js';
   // 戻るボタンの取得
   const returnBtn = document.getElementById('return') as HTMLButtonElement;
 
-  const product: Product = new Product('焼肉弁当');
-
   // 画面ロード時の処理
   window.onload = function () {
     Global.getStockFromLocalStorage();
-    // updateDisabledDecisionBtn();
+    Global.getProductManagerFromLocalStorage();
+    // 選択肢作成
+    Global.productManager.productArr.forEach((target: Product) => {
+      const option: HTMLOptionElement = document.createElement('option');
+      option.value = target.name;
+      option.textContent = target.name;
+      products.appendChild(option);
+    });
+    // 選択肢の取得
+    choice = document.querySelectorAll('option');
+    updateDisabledDecisionBtn();
   };
 
   // ボタンの有効無効判定
   window.addEventListener('change', () => {
-    // updateDisabledDecisionBtn();
+    updateDisabledDecisionBtn();
   });
 
   // 決定ボタンの処理
   decisionBtn.addEventListener('click', () => {
+    const product: Product = new Product(choice[products.selectedIndex].value);
     try {
       if (Number(purchaseQuantity.value) <= 0) {
         throw new Error(ABNORMAL_VALUE_ERROR);
@@ -68,7 +79,7 @@ import { Global } from '../Models/global.js';
   function updateDisabledDecisionBtn(): void {
     // どこかが空欄の場合ボタンを押せない
     decisionBtn.disabled =
-      productName.value === '' ||
+      products.selectedIndex === 0 ||
       purchaseQuantity.value === '' ||
       purchasePrice.value === '' ||
       sellingPrice.value === '' ||
