@@ -2,6 +2,8 @@ import { Global } from '../Models/global.js';
 import { Product } from '../Models/product.js';
 
 {
+  // アラートメッセージ
+  const ALREADY_REGISTERED: string = 'この商品はすでに登録されています。';
   // tbodyの取得
   const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
   // チェックボックスの取得
@@ -35,9 +37,13 @@ import { Product } from '../Models/product.js';
   // 追加ボタンの処理
   addBtn.addEventListener('click', () => {
     const product: Product = new Product(productName.value);
-    Global.productManager.add(product);
-    localStorage.setItem('product', JSON.stringify(Global.productManager.productArr));
-    location.reload();
+    try {
+      Global.productManager.add(product);
+      localStorage.setItem('product', JSON.stringify(Global.productManager.productArr));
+      location.reload();
+    } catch {
+      alert(ALREADY_REGISTERED);
+    }
   });
 
   // 削除ボタンの処理
