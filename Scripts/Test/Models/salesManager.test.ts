@@ -45,43 +45,43 @@ describe('SalesManagerTest', () => {
   test('getTotalSalesTest', () => {
     let manager = new SalesManager();
     // 何もない時
-    expect(manager.getTotalSales()).toBe(0);
+    expect(manager.getTotalSales(manager.salesArr)).toBe(0);
 
     // ひとつ追加
     let sale: Sale = new Sale(new Purchasing(new Product('桃'), '2022-07-20', 200, 400, 200), '2022-07-24', 100, 1);
     manager.add(sale);
-    expect(manager.getTotalSales()).toBe(40000);
+    expect(manager.getTotalSales(manager.salesArr)).toBe(40000);
 
     // 2つ目の追加
     sale = new Sale(new Purchasing(new Product('お茶'), '2022-07-20', 60, 150, 600), '2022-07-28', 200, 2);
     manager.add(sale);
-    expect(manager.getTotalSales()).toBe(70000);
+    expect(manager.getTotalSales(manager.salesArr)).toBe(70000);
 
     // 3つ目の追加
     sale = new Sale(new Purchasing(new Product('アイス'), '2022-07-20', 60, 200, 600), '2022-07-28', 600, 3);
     manager.add(sale);
-    expect(manager.getTotalSales()).toBe(190000);
+    expect(manager.getTotalSales(manager.salesArr)).toBe(190000);
   });
 
   test('getTotalProfitTest', () => {
     let manager = new SalesManager();
     // 何もない時
-    expect(manager.getTotalProfit()).toBe(0);
+    expect(manager.getTotalProfit(manager.salesArr)).toBe(0);
 
     // ひとつ追加
     let sale: Sale = new Sale(new Purchasing(new Product('桃'), '2022-07-20', 200, 400, 200), '2022-07-24', 100, 1);
     manager.add(sale);
-    expect(manager.getTotalProfit()).toBe(20000);
+    expect(manager.getTotalProfit(manager.salesArr)).toBe(20000);
 
     // 2つ目の追加
     sale = new Sale(new Purchasing(new Product('お茶'), '2022-07-20', 60, 150, 600), '2022-07-28', 200, 2);
     manager.add(sale);
-    expect(manager.getTotalProfit()).toBe(38000);
+    expect(manager.getTotalProfit(manager.salesArr)).toBe(38000);
 
     // 3つ目の追加
     sale = new Sale(new Purchasing(new Product('アイス'), '2022-07-20', 60, 200, 600), '2022-07-28', 600, 3);
     manager.add(sale);
-    expect(manager.getTotalProfit()).toBe(122000);
+    expect(manager.getTotalProfit(manager.salesArr)).toBe(122000);
   });
 
   test('clearArrTest', () => {
@@ -98,7 +98,7 @@ describe('SalesManagerTest', () => {
     manager.add(sale);
     expect(manager.salesArr.length).toBe(2);
 
-    manager.clearArr();
+    manager.clearArr(manager.salesArr);
     // 配列が空になっている確認
     expect(manager.salesArr.length).toBe(0);
   });
