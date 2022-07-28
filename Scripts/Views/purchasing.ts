@@ -29,13 +29,7 @@ import { Global } from '../Models/global.js';
   window.onload = function () {
     Global.getStockFromLocalStorage();
     Global.getProductManagerFromLocalStorage();
-    // 選択肢作成
-    Global.productManager.productArr.forEach((target: Product) => {
-      const option: HTMLOptionElement = document.createElement('option');
-      option.value = target.name;
-      option.textContent = target.name;
-      products.appendChild(option);
-    });
+    createcomboBox();
     // 選択肢の取得
     choice = document.querySelectorAll('option');
     updateDisabledDecisionBtn();
@@ -74,6 +68,16 @@ import { Global } from '../Models/global.js';
   returnBtn.addEventListener('click', () => {
     RedirectMainPage();
   });
+
+  // コンボボックスの作成
+  function createcomboBox(): void {
+    Global.productManager.productArr.forEach((target: Product) => {
+      const option: HTMLOptionElement = document.createElement('option');
+      option.value = target.name;
+      option.textContent = target.name;
+      products.appendChild(option);
+    });
+  }
 
   // 決定ボタンの有効無効
   function updateDisabledDecisionBtn(): void {
