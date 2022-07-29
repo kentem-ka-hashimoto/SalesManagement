@@ -29,7 +29,7 @@ closeBtn.addEventListener('click', () => {
 
 // 在庫一覧の作成
 function createStockList(): void {
-  Global.stockManager.separateByProduct(Global.productManager.productArr).forEach((target: Purchasing) => {
+  Global.stockManager.sortAscendingOrder(Global.productManager.productArr).forEach((target: Purchasing) => {
     const tr: HTMLTableRowElement = document.createElement('tr');
     const tdName: HTMLTableCellElement = document.createElement('td');
     tdName.textContent = target.product.name;

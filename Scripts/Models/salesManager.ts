@@ -43,4 +43,12 @@ export class SalesManager {
     }
     return sales;
   }
+
+  public sortAscendingOrder(saleArr: Sale[]): Sale[] {
+    let sales: Sale[] = [];
+    console.log(Number(saleArr[0].purchasing.purchaseDate));
+    sales = [...saleArr].sort((a, b) => Number(a.purchasing.purchaseDate) - Number(b.purchasing.purchaseDate));
+
+    return sales;
+  }
 }

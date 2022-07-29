@@ -37,7 +37,9 @@ window.onload = function () {
   Global.getSalesStatusFromLocalStorage();
 
   Global.getProductManagerFromLocalStorage();
-  salesArr = Global.saleManager.separateByProduct(Global.saleManager.salesArr, Global.productManager.productArr);
+  salesArr = Global.saleManager.sortAscendingOrder(Global.saleManager.salesArr);
+  salesArr = Global.saleManager.separateByProduct(salesArr, Global.productManager.productArr);
+
   const items: string | null = localStorage.getItem('map');
   if (items) {
     map = new Map(JSON.parse(items));
@@ -51,6 +53,7 @@ window.onload = function () {
 // 絞込みボタンの処理
 narrowingBtn.addEventListener('click', () => {
   salesArr = salesArr.filter((sale) => map.get(`${sale.id}`));
+  salesArr = Global.saleManager.sortAscendingOrder(salesArr);
   salesArr = Global.saleManager.separateByProduct(salesArr, Global.productManager.productArr);
   displayUpdate();
 });
@@ -58,6 +61,7 @@ narrowingBtn.addEventListener('click', () => {
 // 今日の販売ボタンの処理
 todaySaleBtn.addEventListener('click', () => {
   salesArr = salesArr.filter((sale) => sale.convertDateToString() === today);
+  salesArr = Global.saleManager.sortAscendingOrder(salesArr);
   salesArr = Global.saleManager.separateByProduct(salesArr, Global.productManager.productArr);
   displayUpdate();
 });
@@ -66,7 +70,8 @@ todaySaleBtn.addEventListener('click', () => {
 lifttBtn.addEventListener('click', () => {
   setCheckStatusToLocalStorage();
   Global.saleManager.clearArr(salesArr);
-  salesArr = Global.saleManager.separateByProduct(Global.saleManager.salesArr, Global.productManager.productArr);
+  salesArr = Global.saleManager.sortAscendingOrder(Global.saleManager.salesArr);
+  salesArr = Global.saleManager.separateByProduct(salesArr, Global.productManager.productArr);
   createSalesStatusList();
   updateTotalSalesAndTotalProfit();
   lifttBtn.disabled = true;
