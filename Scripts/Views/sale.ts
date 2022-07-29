@@ -11,8 +11,6 @@ import { Purchasing } from '../Models/purchasing.js';
 
   // tbodyの取得
   const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
-  // 販売数の取得
-  const saleQuantity = document.getElementById('saleQuantity') as HTMLInputElement;
   // 販売日の取得
   const saleDate = document.getElementById('seleDate') as HTMLInputElement;
   // 決定ボタンの取得
@@ -42,33 +40,39 @@ import { Purchasing } from '../Models/purchasing.js';
 
   // 決定ボタンの処理
   decisionBtn.addEventListener('click', () => {
-    // チェックのインデックス取得
-    let index: number = 0;
-    checks.forEach((check, checks_index) => {
-      if (check.checked) {
-        index = checks_index;
-        return;
-      }
-    });
-
-    // 在庫数の更新
-    try {
-      if (Number(saleQuantity.value) <= 0) {
-        throw new Error(ABNORMAL_VALUE_ERROR);
-      }
-      Global.stockManager.stockArr[index].stock -= Number(saleQuantity.value); //在庫を減らす
-      window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
-      // new Sale(Purchasing、販売日、販売数、ID)
-      idCount++;
-      const sale: Sale = new Sale(Global.stockManager.stockArr[index], saleDate.value, Number(saleQuantity.value), idCount);
-      Global.saleManager.add(sale);
-    } catch (e) {
-      if (e instanceof RangeError) {
-        alert(NO_STOCK);
-        return;
-      } else if (e instanceof Error) {
+    for (let i = 0; i < saleQuantityArr.length; i++) {
+      try {
+        if (checks[i].checked && Number(saleQuantityArr[i].value) <= 0) {
+          throw new Error(ABNORMAL_VALUE_ERROR);
+        }
+      } catch {
         alert(NOT_NORMAL_VALUE);
         return;
+      }
+    }
+
+    for (let i = 0; i < checks.length; i++) {
+      try {
+        if (checks[i].checked) {
+          if (Number(saleQuantityArr[i].value) <= 0) {
+            throw new Error(ABNORMAL_VALUE_ERROR);
+          }
+          //在庫を減らす
+          Global.stockManager.stockArr[i].stock -= Number(saleQuantityArr[i].value);
+          window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
+          // new Sale(Purchasing、販売日、販売数、ID)
+          idCount++;
+          const sale: Sale = new Sale(Global.stockManager.stockArr[i], saleDate.value, Number(saleQuantityArr[i].value), idCount);
+          Global.saleManager.add(sale);
+        }
+      } catch (e) {
+        if (e instanceof RangeError) {
+          alert(NO_STOCK);
+          return;
+        } else if (e instanceof Error) {
+          alert(NOT_NORMAL_VALUE);
+          return;
+        }
       }
     }
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
@@ -94,9 +98,6 @@ import { Purchasing } from '../Models/purchasing.js';
       // 入力部分の有効無効判定
       checkBox.addEventListener('change', () => {
         updateDisabledInput();
-        saleQuantityArr.forEach((a) => {
-          console.log(a.value);
-        });
       });
 
       tdCheck.appendChild(checkBox);
@@ -131,16 +132,17 @@ import { Purchasing } from '../Models/purchasing.js';
       }
       saleQuantityArr[index].disabled = !check.checked;
       if (check.checked) checkCount++;
-      saleQuantity.disabled = checkCount === 0;
       saleDate.disabled = checkCount === 0;
     });
   }
 
-  // 販売数テキストボックス部分の有効無
-
   // 決定ボタンの有効無効
   function updateDisabledDecisionBtn(): void {
-    decisionBtn.disabled = saleQuantity.value === '' || saleDate.value === '';
+    let checkCount: number = 0;
+    checks.forEach((check, index) => {
+      if (check.checked && saleQuantityArr[index].value === '') checkCount++;
+    });
+    decisionBtn.disabled = checkCount >= 1 || saleDate.value === '';
   }
 
   // メイン画面遷移
