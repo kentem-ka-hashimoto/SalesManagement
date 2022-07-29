@@ -27,8 +27,8 @@ import { Global } from '../Models/global.js';
 
   // 画面ロード時の処理
   window.onload = function () {
-    Global.getStockFromLocalStorage();
     Global.getProductManagerFromLocalStorage();
+    Global.getStockFromLocalStorage();
     createcomboBox();
     // 選択肢の取得
     choice = document.querySelectorAll('option');
@@ -55,7 +55,7 @@ import { Global } from '../Models/global.js';
         Number(sellingPrice.value),
         Number(purchaseQuantity.value)
       );
-      Global.stockManager.add(purchasing);
+      Global.stockManager.add(purchasing, Global.productManager.productArr);
     } catch {
       alert(NOT_NORMAL_VALUE);
       return;

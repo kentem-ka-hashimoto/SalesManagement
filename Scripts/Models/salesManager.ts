@@ -8,8 +8,10 @@ export class SalesManager {
     return this._salesArr;
   }
 
-  public add(sale: Sale): void {
+  public add(sale: Sale, products: Product[]): void {
     this._salesArr.push(sale);
+    this.sortAscendingOrder();
+    this._salesArr = this.separateByProduct(this._salesArr, products);
   }
 
   public getTotalSales(salesArr: Sale[]): number {
@@ -32,7 +34,18 @@ export class SalesManager {
     salesArr.length = 0;
   }
 
-  public separateByProduct(saleArr: Sale[], products: Product[]): Sale[] {
+  // private separateByProduct(products: Product[]): void {
+  //   let sales: Sale[] = [];
+  //   for (let i = 0; i < products.length; i++) {
+  //     for (let j = 0; j < this._salesArr.length; j++) {
+  //       if (products[i].name === this._salesArr[j].purchasing.product.name) {
+  //         sales.push(this._salesArr[j]);
+  //       }
+  //     }
+  //   }
+  // }
+
+  private separateByProduct(saleArr: Sale[], products: Product[]): Sale[] {
     let sales: Sale[] = [];
     for (let i = 0; i < products.length; i++) {
       for (let j = 0; j < saleArr.length; j++) {
@@ -44,11 +57,15 @@ export class SalesManager {
     return sales;
   }
 
-  public sortAscendingOrder(saleArr: Sale[]): Sale[] {
-    let sales: Sale[] = [];
-    console.log(Number(saleArr[0].purchasing.purchaseDate));
-    sales = [...saleArr].sort((a, b) => Number(a.purchasing.purchaseDate) - Number(b.purchasing.purchaseDate));
-
-    return sales;
+  private sortAscendingOrder(): void {
+    this._salesArr.sort((a, b) => Number(a.purchasing.purchaseDate) - Number(b.purchasing.purchaseDate));
   }
+
+  // public sortAscendingOrder(saleArr: Sale[]): Sale[] {
+  //   let sales: Sale[] = [];
+  //   console.log(Number(saleArr[0].purchasing.purchaseDate));
+  //   sales = [...saleArr].sort((a, b) => Number(a.purchasing.purchaseDate) - Number(b.purchasing.purchaseDate));
+
+  //   return sales;
+  // }
 }

@@ -63,7 +63,7 @@ import { Purchasing } from '../Models/purchasing.js';
           // new Sale(Purchasing、販売日、販売数、ID)
           idCount++;
           const sale: Sale = new Sale(Global.stockManager.stockArr[i], new Date(saleDate.value), Number(saleQuantityArr[i].value), idCount);
-          Global.saleManager.add(sale);
+          Global.saleManager.add(sale, Global.productManager.productArr);
         }
       } catch (e) {
         if (e instanceof RangeError) {

@@ -9,11 +9,13 @@ export class StockManager {
     return this._stockArr;
   }
 
-  public add(product: Purchasing): void {
-    this._stockArr.push(product);
+  public add(purchase: Purchasing, products: Product[]): void {
+    this._stockArr.push(purchase);
+    this.sortAscendingOrder();
+    this._stockArr = this.separateByProduct(this._stockArr, products);
   }
 
-  public separateByProduct(purchases: Purchasing[], products: Product[]): Purchasing[] {
+  private separateByProduct(purchases: Purchasing[], products: Product[]): Purchasing[] {
     let purchaseArr: Purchasing[] = [];
     for (let i = 0; i < products.length; i++) {
       for (let j = 0; j < purchases.length; j++) {
@@ -25,11 +27,7 @@ export class StockManager {
     return purchaseArr;
   }
 
-  public sortAscendingOrder(products: Product[]): Purchasing[] {
-    let purchases: Purchasing[] = [];
-    purchases = [...this._stockArr].sort((a, b) => Number(a.purchaseDate) - Number(b.purchaseDate));
-
-    purchases = this.separateByProduct(purchases, products);
-    return purchases;
+  private sortAscendingOrder(): void {
+    this._stockArr.sort((a, b) => Number(a.purchaseDate) - Number(b.purchaseDate));
   }
 }

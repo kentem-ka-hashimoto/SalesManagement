@@ -9,8 +9,8 @@ const closeBtn = document.getElementById('close') as HTMLButtonElement;
 
 // 画面ロード時の処理
 window.onload = function () {
-  Global.getStockFromLocalStorage();
   Global.getProductManagerFromLocalStorage();
+  Global.getStockFromLocalStorage();
   createStockList();
 };
 
@@ -29,7 +29,7 @@ closeBtn.addEventListener('click', () => {
 
 // 在庫一覧の作成
 function createStockList(): void {
-  Global.stockManager.sortAscendingOrder(Global.productManager.productArr).forEach((target: Purchasing) => {
+  Global.stockManager.stockArr.forEach((target: Purchasing) => {
     const tr: HTMLTableRowElement = document.createElement('tr');
     const tdName: HTMLTableCellElement = document.createElement('td');
     tdName.textContent = target.product.name;

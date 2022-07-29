@@ -31,6 +31,17 @@ export class Global {
     return this._productManager;
   }
 
+  public static getProductManagerFromLocalStorage(): void {
+    const items: string | null = localStorage.getItem('product');
+    if (items) {
+      const products: string[] = JSON.parse(items);
+      products.forEach((target: any) => {
+        const product: Product = new Product(target._name);
+        Global.productManager.add(product);
+      });
+    }
+  }
+
   public static getStockFromLocalStorage(): void {
     const items: string | null = localStorage.getItem('stock');
     if (items) {
@@ -43,12 +54,13 @@ export class Global {
           target._sellingPrice,
           target._stock
         );
-        Global.stockManager.add(purchasing);
+        Global.stockManager.add(purchasing, this._productManager.productArr);
       });
     }
   }
 
   public static getSalesStatusFromLocalStorage(): void {
+    this.getProductManagerFromLocalStorage();
     const items: string | null = localStorage.getItem('sale');
     if (items) {
       const salesStatus: string[] = JSON.parse(items);
@@ -67,18 +79,7 @@ export class Global {
           target._saleQuantity,
           idCount
         );
-        Global.saleManager.add(saleData);
-      });
-    }
-  }
-
-  public static getProductManagerFromLocalStorage(): void {
-    const items: string | null = localStorage.getItem('product');
-    if (items) {
-      const products: string[] = JSON.parse(items);
-      products.forEach((target: any) => {
-        const product: Product = new Product(target._name);
-        Global.productManager.add(product);
+        Global.saleManager.add(saleData, this._productManager.productArr);
       });
     }
   }
