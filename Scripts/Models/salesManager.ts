@@ -1,3 +1,4 @@
+import { Product } from './product.js';
 import { Sale } from './sale.js';
 
 export class SalesManager {
@@ -29,5 +30,17 @@ export class SalesManager {
 
   public clearArr(salesArr: Sale[]): void {
     salesArr.length = 0;
+  }
+
+  public separateByProduct(saleArr: Sale[], products: Product[]): Sale[] {
+    let sales: Sale[] = [];
+    for (let i = 0; i < products.length; i++) {
+      for (let j = 0; j < saleArr.length; j++) {
+        if (products[i].name === saleArr[j].purchasing.product.name) {
+          sales.push(saleArr[j]);
+        }
+      }
+    }
+    return sales;
   }
 }
