@@ -38,7 +38,7 @@ export class Global {
       stock.forEach((target: any) => {
         const purchasing: Purchasing = new Purchasing(
           new Product(target._product._name),
-          target._purchaseDate,
+          new Date(target._purchaseDate),
           target._purchasePrice,
           target._sellingPrice,
           target._stock
@@ -58,12 +58,12 @@ export class Global {
         const saleData: Sale = new Sale(
           new Purchasing(
             new Product(target._purchasing._product._name),
-            target._purchasing._purchaseDate,
+            new Date(target._purchasing._purchaseDate),
             target._purchasing._purchasePrice,
             target._purchasing._sellingPrice,
             target._purchasing._stock
           ),
-          target._saleDate,
+          new Date(target._saleDate),
           target._saleQuantity,
           idCount
         );

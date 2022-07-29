@@ -5,7 +5,7 @@ export class Purchasing {
 
   constructor(
     private _product: Product,
-    private _purchaseDate: string,
+    private _purchaseDate: Date,
     private _purchasePrice: number,
     private _sellingPrice: number,
     private _stock: number
@@ -24,7 +24,7 @@ export class Purchasing {
     return this._product;
   }
 
-  public get purchaseDate(): string {
+  public get purchaseDate(): Date {
     return this._purchaseDate;
   }
 
@@ -49,5 +49,16 @@ export class Purchasing {
 
   private checkValue(target: number): boolean {
     return target < 0;
+  }
+
+  public convertDateToString(): string {
+    // ●●●●-●●-●●の形にする
+    return (
+      this._purchaseDate.getFullYear() +
+      '-' +
+      `${('00' + (this._purchaseDate.getMonth() + 1)).slice(-2)}` +
+      '-' +
+      `${('00' + this._purchaseDate.getDate()).slice(-2)}`
+    );
   }
 }

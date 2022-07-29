@@ -50,7 +50,7 @@ import { Global } from '../Models/global.js';
       // new Purchasing(商品、仕入日、仕入価格、販売価格、仕入数)
       const purchasing: Purchasing = new Purchasing(
         product,
-        purchaseDate.value,
+        new Date(purchaseDate.value),
         Number(purchasePrice.value),
         Number(sellingPrice.value),
         Number(purchaseQuantity.value)

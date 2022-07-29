@@ -33,7 +33,7 @@ function createStockList(): void {
     const tdName: HTMLTableCellElement = document.createElement('td');
     tdName.textContent = target.product.name;
     const tdPurchaseDate: HTMLTableCellElement = document.createElement('td');
-    tdPurchaseDate.textContent = target.purchaseDate;
+    tdPurchaseDate.textContent = target.convertDateToString();
     const tdPurchasePrice: HTMLTableCellElement = document.createElement('td');
     tdPurchasePrice.textContent = `${target.purchasePrice}円`;
     const tdSellingPrice: HTMLTableCellElement = document.createElement('td');

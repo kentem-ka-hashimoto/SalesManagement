@@ -62,7 +62,7 @@ import { Purchasing } from '../Models/purchasing.js';
           window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
           // new Sale(Purchasing、販売日、販売数、ID)
           idCount++;
-          const sale: Sale = new Sale(Global.stockManager.stockArr[i], saleDate.value, Number(saleQuantityArr[i].value), idCount);
+          const sale: Sale = new Sale(Global.stockManager.stockArr[i], new Date(saleDate.value), Number(saleQuantityArr[i].value), idCount);
           Global.saleManager.add(sale);
         }
       } catch (e) {
