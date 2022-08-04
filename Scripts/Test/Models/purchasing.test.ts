@@ -26,9 +26,6 @@ describe('PurchasingTest', () => {
     // 販売価格がマイナスの値
     expect(() => (purchasing = new Purchasing(new Product('桃'), new Date('2022-07-20'), 200, -10, 200))).toThrowError('The value is abnormal');
 
-    // 仕入数が０
-    expect(() => (purchasing = new Purchasing(new Product('桃'), new Date('2022-07-20'), 200, 400, 0))).toThrowError('The value is abnormal');
-
     // 仕入数がマイナスの値
     expect(() => (purchasing = new Purchasing(new Product('桃'), new Date('2022-07-20'), 200, 400, -10))).toThrowError('The value is abnormal');
 

@@ -20,7 +20,7 @@ export class Purchasing {
       this.checkValue(this._purchasePrice) ||
       this.checkValue(this._sellingPrice) ||
       this._sellingPrice <= this._purchasePrice ||
-      this._stock <= 0
+      this.checkValue(this._stock)
     ) {
       throw new Error(this.ABNORMAL_VALUE_ERROR);
     }
