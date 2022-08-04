@@ -10,12 +10,18 @@ export class Purchasing {
     private _sellingPrice: number,
     private _stock: number
   ) {
+    this._product = _product;
     this._purchaseDate = _purchaseDate;
     this._purchasePrice = _purchasePrice;
     this._sellingPrice = _sellingPrice;
     this._stock = _stock;
 
-    if (this.checkValue(this._purchasePrice) || this.checkValue(this._sellingPrice) || this._sellingPrice <= this._purchasePrice) {
+    if (
+      this.checkValue(this._purchasePrice) ||
+      this.checkValue(this._sellingPrice) ||
+      this._sellingPrice <= this._purchasePrice ||
+      this._stock <= 0
+    ) {
       throw new Error(this.ABNORMAL_VALUE_ERROR);
     }
   }
@@ -42,7 +48,7 @@ export class Purchasing {
 
   public set stock(value: number) {
     if (this.checkValue(value)) {
-      throw new RangeError(this.ABNORMAL_VALUE_ERROR);
+      throw new Error(this.ABNORMAL_VALUE_ERROR);
     }
     this._stock = value;
   }
