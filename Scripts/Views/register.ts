@@ -31,8 +31,14 @@ import { Product } from '../Models/product.js';
         }
       });
     });
+    disabledAddBtn();
     updateDisabledDeletBtn();
   };
+
+  // テキストボックス入力時の処理
+  productName.addEventListener('input', () => {
+    disabledAddBtn();
+  });
 
   // 追加ボタンの処理
   addBtn.addEventListener('click', () => {
@@ -95,6 +101,11 @@ import { Product } from '../Models/product.js';
       if (check.checked) checkCount++;
       deleteBtn.disabled = checkCount === 0;
     });
+  }
+
+  // 追加ボタンの有効無効
+  function disabledAddBtn(): void {
+    addBtn.disabled = productName.value === '';
   }
 
   // メイン画面遷移

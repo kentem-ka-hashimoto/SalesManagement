@@ -3,8 +3,8 @@ import { Sale } from '../Models/sale.js';
 import { Purchasing } from '../Models/purchasing.js';
 
 {
+  let saleProductName: string = '';
   // アラートメッセージ
-  const NO_STOCK: string = '在庫数が足りません。';
   const NOT_NORMAL_VALUE: string = '値が正常ではありません。もう一度お確かめください。';
   // エラーメッセージ
   const ABNORMAL_VALUE_ERROR: string = 'The value is abnormal';
@@ -51,62 +51,80 @@ import { Purchasing } from '../Models/purchasing.js';
       }
     }
 
+    // for (let i = 0; i < checks.length; i++) {
+    //   let saleProductName: string = Global.stockManager.stockArr[i].product.name;
+    //   try {
+    //     if (checks[i].checked) {
+    //       // マイナスの値が入力されていないかチェック
+    //       if (Number(saleQuantityArr[i].value) <= 0) {
+    //         throw new Error(ABNORMAL_VALUE_ERROR);
+    //       }
+
+    //       // 在庫あるか確認
+    //       let stock: number = 0;
+    //       Global.stockManager.stockArr.forEach((item) => {
+    //         if (item.product.name === saleProductName) {
+    //           stock += item.stock;
+    //         }
+    //       });
+    //       if (stock < Number(saleQuantityArr[i].value)) {
+    //         throw new RangeError(ABNORMAL_VALUE_ERROR);
+    //       }
+
+    //       //在庫を減らす
+    //       let saleQuantity: number = Number(saleQuantityArr[i].value);
+    //       for (let j = 0; j < Global.stockManager.stockArr.length; j++) {
+    //         if (Global.stockManager.stockArr[j].product.name === saleProductName) {
+    //           if (Global.stockManager.stockArr[j].stock >= saleQuantity) {
+    //             Global.stockManager.stockArr[j].stock -= saleQuantity;
+    //             break;
+    //           } else if (Global.stockManager.stockArr[j].stock < saleQuantity) {
+    //             saleQuantity -= Global.stockManager.stockArr[j].stock;
+    //             Global.stockManager.stockArr[j].stock = 0;
+    //           }
+    //         }
+    //       }
+
+    //       // Global.stockManager.stockArr[i].stock -= Number(saleQuantityArr[i].value);
+    //       window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
+    //       // new Sale(Purchasing、販売日、販売数、ID)
+    //       idCount++;
+
+    //       const sale: Sale = new Sale(Global.stockManager.stockArr[i], new Date(saleDate.value), Number(saleQuantityArr[i].value), idCount);
+    //       Global.saleManager.add(sale, Global.productManager.productArr);
+    //     }
+    //   } catch (e) {
+    //     if (e instanceof Error) {
+    //       alert(NOT_NORMAL_VALUE);
+    //       return;
+    //     } else if (e instanceof RangeError) {
+    //       alert(NO_STOCK);
+    //       return;
+    //     }
+    //   }
+    // }
     for (let i = 0; i < checks.length; i++) {
-      let saleProductName: string = Global.stockManager.stockArr[i].product.name;
+      saleProductName = Global.stockManager.stockArr[i].product.name;
+      const saleQuantity: number = Number(saleQuantityArr[i].value);
       try {
-        if (checks[i].checked) {
-          // マイナスの値が入力されていないかチェック
-          if (Number(saleQuantityArr[i].value) <= 0) {
-            throw new Error(ABNORMAL_VALUE_ERROR);
-          }
-
-          // 在庫あるか確認
-          let stock: number = 0;
-          Global.stockManager.stockArr.forEach((item) => {
-            if (item.product.name === saleProductName) {
-              stock += item.stock;
-            }
-          });
-          if (stock < Number(saleQuantityArr[i].value)) {
-            throw new RangeError(ABNORMAL_VALUE_ERROR);
-          }
-
-          //在庫を減らす
-          let saleQuantity: number = Number(saleQuantityArr[i].value);
-          for (let j = 0; j < Global.stockManager.stockArr.length; j++) {
-            if (Global.stockManager.stockArr[j].product.name === saleProductName) {
-              if (Global.stockManager.stockArr[j].stock >= saleQuantity) {
-                Global.stockManager.stockArr[j].stock -= saleQuantity;
-                break;
-              } else if (Global.stockManager.stockArr[j].stock < saleQuantity) {
-                saleQuantity -= Global.stockManager.stockArr[j].stock;
-                Global.stockManager.stockArr[j].stock = 0;
-              }
-            }
-          }
-
-
-          // Global.stockManager.stockArr[i].stock -= Number(saleQuantityArr[i].value);
-          window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
-          // new Sale(Purchasing、販売日、販売数、ID)
-          idCount++;
-          console.log('d');
-
-          const sale: Sale = new Sale(Global.stockManager.stockArr[i], new Date(saleDate.value), Number(saleQuantityArr[i].value), idCount);
-          Global.saleManager.add(sale, Global.productManager.productArr);
-        }
-      } catch (e) {
-        if (e instanceof RangeError) {
-          alert(NO_STOCK);
-          return;
-        } else if (e instanceof Error) {
-          console.log('e');
-
-          alert(NOT_NORMAL_VALUE);
-          return;
-        }
+        Global.stockManager.reduceStock(saleProductName, saleQuantity);
+        window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
+        idCount++;
+        const sale: Sale = new Sale(Global.stockManager.stockArr[i], new Date(saleDate.value), Number(saleQuantityArr[i].value), idCount);
+        Global.saleManager.add(sale, Global.productManager.productArr);
+      } catch {
+        const NO_STOCK: string = `${saleProductName}は在庫が足りないので販売できませんでした。`;
+        console.log(saleProductName);
+        console.log(NO_STOCK);
+        alert(NO_STOCK);
+        deleteTbodyChildren();
+        createStockList();
+        updateDisabledInput();
+        updateDisabledDecisionBtn();
+        return;
       }
     }
+
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     localStorage.setItem('idCount', `${idCount}`);
     RedirectMainPage();
@@ -175,6 +193,13 @@ import { Purchasing } from '../Models/purchasing.js';
       if (check.checked && saleQuantityArr[index].value === '') checkCount++;
     });
     decisionBtn.disabled = checkCount >= 1 || saleDate.value === '';
+  }
+
+  // tbody内の削除
+  function deleteTbodyChildren(): void {
+    while (tbody?.firstChild) {
+      tbody.removeChild(tbody.firstChild);
+    }
   }
 
   // メイン画面遷移
