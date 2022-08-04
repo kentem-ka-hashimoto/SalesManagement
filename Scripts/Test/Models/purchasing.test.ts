@@ -55,7 +55,6 @@ describe('PurchasingTest', () => {
   });
 
   test('convertDateToStringTest', () => {
-    const date: Date = new Date('2022-07-20');
     let purchasing: Purchasing = new Purchasing(new Product('桃'), new Date('2022-07-20'), 200, 400, 200);
 
     expect(purchasing.convertDateToString()).toBe('2022-07-20');

@@ -24,4 +24,10 @@ describe('SaleTest', () => {
     // idの取得
     expect(sale.id).toBe(1);
   });
+
+  test('convertDateToStringTest', () => {
+    let sale: Sale = new Sale(new Purchasing(new Product('桃'), new Date('2022-07-20'), 200, 400, 200), new Date('2022-07-24'), 100, 1);
+
+    expect(sale.convertDateToString()).toBe('2022-07-24');
+  });
 });
