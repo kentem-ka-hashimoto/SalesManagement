@@ -16,9 +16,10 @@ describe('SalesManagerTest', () => {
     let saleDate: Date = new Date('2022-07-24');
     let sale: Sale = new Sale(new Purchasing(new Product('桃'), new Date('2022-07-20'), 200, 400, 200), new Date('2022-07-24'), 100, 1);
     expect(manager.salesArr.length).toBe(0);
+    const productArr: Product[] = [new Product('桃')];
 
     // 1つ追加した際の確認
-    manager.add(sale);
+    manager.add(sale, productArr);
     expect(manager.salesArr.length).toBe(1);
     expect(manager.salesArr[0].purchasing.product.name).toBe('桃');
     expect(manager.salesArr[0].purchasing.purchaseDate).toEqual(purchaseDate);
@@ -32,8 +33,9 @@ describe('SalesManagerTest', () => {
     // 2つ目追加した際の確認
     saleDate = new Date('2022-07-28');
     sale = new Sale(new Purchasing(new Product('お茶'), new Date('2022-07-20'), 60, 150, 600), new Date('2022-07-28'), 200, 2);
+    productArr.push(new Product('お茶'));
 
-    manager.add(sale);
+    manager.add(sale, productArr);
     expect(manager.salesArr.length).toBe(2);
     expect(manager.salesArr[1].purchasing.product.name).toBe('お茶');
     expect(manager.salesArr[1].purchasing.purchaseDate).toEqual(purchaseDate);
@@ -43,6 +45,20 @@ describe('SalesManagerTest', () => {
     expect(manager.salesArr[1].saleDate).toEqual(saleDate);
     expect(manager.salesArr[1].saleQuantity).toBe(200);
     expect(manager.salesArr[1].id).toBe(2);
+
+    // ３つ目追加した際の確認(１つ目と同じ名前、１つ目よりも仕入日が古い商品を追加)
+    purchaseDate = new Date('2022-07-18');
+    sale = new Sale(new Purchasing(new Product('桃'), new Date('2022-07-18'), 300, 500, 300), new Date('2022-07-28'), 300, 3);
+    manager.add(sale, productArr);
+    expect(manager.salesArr.length).toBe(3);
+    expect(manager.salesArr[0].purchasing.product.name).toBe('桃');
+    expect(manager.salesArr[0].purchasing.purchaseDate).toEqual(purchaseDate);
+    expect(manager.salesArr[0].purchasing.purchasePrice).toBe(300);
+    expect(manager.salesArr[0].purchasing.sellingPrice).toBe(500);
+    expect(manager.salesArr[0].purchasing.stock).toBe(300);
+    expect(manager.salesArr[0].saleDate).toEqual(saleDate);
+    expect(manager.salesArr[0].saleQuantity).toBe(300);
+    expect(manager.salesArr[0].id).toBe(3);
   });
 
   test('getTotalSalesTest', () => {
@@ -52,17 +68,22 @@ describe('SalesManagerTest', () => {
 
     // ひとつ追加
     let sale: Sale = new Sale(new Purchasing(new Product('桃'), new Date('2022-07-20'), 200, 400, 200), new Date('2022-07-24'), 100, 1);
-    manager.add(sale);
+    const productArr: Product[] = [new Product('桃')];
+    manager.add(sale, productArr);
     expect(manager.getTotalSales(manager.salesArr)).toBe(40000);
 
     // 2つ目の追加
     sale = new Sale(new Purchasing(new Product('お茶'), new Date('2022-07-20'), 60, 150, 600), new Date('2022-07-28'), 200, 2);
-    manager.add(sale);
+    productArr.push(new Product('お茶'));
+
+    manager.add(sale, productArr);
     expect(manager.getTotalSales(manager.salesArr)).toBe(70000);
 
     // 3つ目の追加
     sale = new Sale(new Purchasing(new Product('アイス'), new Date('2022-07-20'), 60, 200, 600), new Date('2022-07-28'), 600, 3);
-    manager.add(sale);
+    productArr.push(new Product('アイス'));
+
+    manager.add(sale, productArr);
     expect(manager.getTotalSales(manager.salesArr)).toBe(190000);
   });
 
@@ -73,17 +94,23 @@ describe('SalesManagerTest', () => {
 
     // ひとつ追加
     let sale: Sale = new Sale(new Purchasing(new Product('桃'), new Date('2022-07-20'), 200, 400, 200), new Date('2022-07-24'), 100, 1);
-    manager.add(sale);
+    const productArr: Product[] = [new Product('桃')];
+
+    manager.add(sale, productArr);
     expect(manager.getTotalProfit(manager.salesArr)).toBe(20000);
 
     // 2つ目の追加
     sale = new Sale(new Purchasing(new Product('お茶'), new Date('2022-07-20'), 60, 150, 600), new Date('2022-07-28'), 200, 2);
-    manager.add(sale);
+    productArr.push(new Product('お茶'));
+
+    manager.add(sale, productArr);
     expect(manager.getTotalProfit(manager.salesArr)).toBe(38000);
 
     // 3つ目の追加
     sale = new Sale(new Purchasing(new Product('アイス'), new Date('2022-07-20'), 60, 200, 600), new Date('2022-07-28'), 600, 3);
-    manager.add(sale);
+    productArr.push(new Product('アイス'));
+
+    manager.add(sale, productArr);
     expect(manager.getTotalProfit(manager.salesArr)).toBe(122000);
   });
 
@@ -93,12 +120,15 @@ describe('SalesManagerTest', () => {
     expect(manager.salesArr.length).toBe(0);
 
     // 1つ追加されているか確認
-    manager.add(sale);
+    const productArr: Product[] = [new Product('桃')];
+    manager.add(sale, productArr);
     expect(manager.salesArr.length).toBe(1);
 
     // 2つ目追加されているか確認
     sale = new Sale(new Purchasing(new Product('お茶'), new Date('2022-07-20'), 60, 150, 600), new Date('2022-07-28'), 200, 2);
-    manager.add(sale);
+    productArr.push(new Product('お茶'));
+
+    manager.add(sale, productArr);
     expect(manager.salesArr.length).toBe(2);
 
     manager.clearArr(manager.salesArr);
