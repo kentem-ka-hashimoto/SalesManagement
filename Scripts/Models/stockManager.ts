@@ -16,18 +16,6 @@ export class StockManager {
   }
 
   public reduceStock(saleProductName: string, saleQuantity: number): void {
-    // 在庫があるかチェック
-    let stock: number = 0;
-    this._stockArr.forEach((item: Purchasing) => {
-      if (item.product.name === saleProductName) {
-        stock += item.stock;
-      }
-    });
-    if (stock < saleQuantity) {
-      throw new RangeError(this.ABNORMAL_VALUE_ERROR);
-    }
-
-    // 在庫を減らす
     for (let i = 0; i < this._stockArr.length; i++) {
       if (this._stockArr[i].product.name === saleProductName) {
         if (this._stockArr[i].stock >= saleQuantity) {
@@ -39,6 +27,16 @@ export class StockManager {
         }
       }
     }
+  }
+
+  public checkEnoughStock(saleProductName: string, saleQuantity: number): boolean {
+    let stock: number = 0;
+    this._stockArr.forEach((item: Purchasing) => {
+      if (item.product.name === saleProductName) {
+        stock += item.stock;
+      }
+    });
+    return saleQuantity <= stock;
   }
 
   private separateByProduct(purchases: Purchasing[], products: Product[]): Purchasing[] {

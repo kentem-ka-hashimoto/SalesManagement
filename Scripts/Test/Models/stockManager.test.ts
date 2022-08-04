@@ -76,7 +76,7 @@ describe('StockManagerTest', () => {
     expect(manager.stockArr[1].stock).toBe(200);
   });
 
-  test('reduceStockErrorTest', () => {
+  test('checkEnoughStockErrorTest', () => {
     let manager = new StockManager();
     let date: Date = new Date('2022-07-20');
     let purchasing: Purchasing = new Purchasing(new Product('桃'), new Date('2022-07-20'), 200, 400, 200);
@@ -95,6 +95,6 @@ describe('StockManagerTest', () => {
     expect(manager.stockArr[1].stock).toBe(300);
 
     // 桃の在庫を700個減らす(在庫が不足している)
-    expect(() => manager.reduceStock('桃', 700)).toThrowError('The value is abnormal');
+    expect(manager.checkEnoughStock('桃', 700)).toBe(false);
   });
 });
