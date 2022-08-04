@@ -31,9 +31,6 @@ const today = date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice
 // 画面ロード時の処理
 window.onload = function () {
     Global.getSalesStatusFromLocalStorage();
-    // Global.getProductManagerFromLocalStorage();
-    // salesArr = Global.saleManager.sortAscendingOrder(Global.saleManager.salesArr);
-    // salesArr = Global.saleManager.separateByProduct(salesArr, Global.productManager.productArr);
     salesArr = Global.saleManager.salesArr.concat();
     const items = localStorage.getItem('map');
     if (items) {
@@ -47,23 +44,17 @@ window.onload = function () {
 // 絞込みボタンの処理
 narrowingBtn.addEventListener('click', () => {
     salesArr = salesArr.filter((sale) => map.get(`${sale.id}`));
-    // salesArr = Global.saleManager.sortAscendingOrder(salesArr);
-    // salesArr = Global.saleManager.separateByProduct(salesArr, Global.productManager.productArr);
     displayUpdate();
 });
 // 今日の販売ボタンの処理
 todaySaleBtn.addEventListener('click', () => {
     salesArr = salesArr.filter((sale) => sale.convertDateToString() === today);
-    // salesArr = Global.saleManager.sortAscendingOrder(salesArr);
-    // salesArr = Global.saleManager.separateByProduct(salesArr, Global.productManager.productArr);
     displayUpdate();
 });
 // 解除ボタンの処理
 lifttBtn.addEventListener('click', () => {
     setCheckStatusToLocalStorage();
     Global.saleManager.clearArr(salesArr);
-    // salesArr = Global.saleManager.sortAscendingOrder(Global.saleManager.salesArr);
-    // salesArr = Global.saleManager.separateByProduct(salesArr, Global.productManager.productArr);
     salesArr = Global.saleManager.salesArr.concat();
     createSalesStatusList();
     updateTotalSalesAndTotalProfit();
