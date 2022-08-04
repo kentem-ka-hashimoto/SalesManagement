@@ -8,7 +8,7 @@
       "type": "pwa-chrome",
       "request": "launch",
       "name": "Open main.html",
-      "url":" http://localhost:5500/Views/main.html"
+      "url":" http://localhost:5501/Views/Main.html"
     }
   ]
 }
