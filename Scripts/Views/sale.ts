@@ -23,10 +23,10 @@ import { Purchasing } from '../Models/purchasing.js';
   let saleQuantityArr: NodeListOf<HTMLInputElement>;
   // 配列末尾のidを取得
   let idCount: number = Number(localStorage.getItem('idCount'));
-  Global.getSalesStatusFromLocalStorage();
 
   // 画面ロード時の処理
   window.onload = function () {
+    Global.getSalesStatusFromLocalStorage();
     Global.getStockFromLocalStorage();
     createStockList();
     updateDisabledInput();
@@ -52,16 +52,46 @@ import { Purchasing } from '../Models/purchasing.js';
     }
 
     for (let i = 0; i < checks.length; i++) {
+      let saleProductName: string = Global.stockManager.stockArr[i].product.name;
       try {
         if (checks[i].checked) {
+          // マイナスの値が入力されていないかチェック
           if (Number(saleQuantityArr[i].value) <= 0) {
             throw new Error(ABNORMAL_VALUE_ERROR);
           }
+
+          // 在庫あるか確認
+          let stock: number = 0;
+          Global.stockManager.stockArr.forEach((item) => {
+            if (item.product.name === saleProductName) {
+              stock += item.stock;
+            }
+          });
+          if (stock < Number(saleQuantityArr[i].value)) {
+            throw new RangeError(ABNORMAL_VALUE_ERROR);
+          }
+
           //在庫を減らす
-          Global.stockManager.stockArr[i].stock -= Number(saleQuantityArr[i].value);
+          let saleQuantity: number = Number(saleQuantityArr[i].value);
+          for (let j = 0; j < Global.stockManager.stockArr.length; j++) {
+            if (Global.stockManager.stockArr[j].product.name === saleProductName) {
+              if (Global.stockManager.stockArr[j].stock >= saleQuantity) {
+                Global.stockManager.stockArr[j].stock -= saleQuantity;
+                break;
+              } else if (Global.stockManager.stockArr[j].stock < saleQuantity) {
+                saleQuantity -= Global.stockManager.stockArr[j].stock;
+                Global.stockManager.stockArr[j].stock = 0;
+              }
+            }
+          }
+
+
+          // Global.stockManager.stockArr[i].stock -= Number(saleQuantityArr[i].value);
           window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
           // new Sale(Purchasing、販売日、販売数、ID)
           idCount++;
+          console.log('d');
+
           const sale: Sale = new Sale(Global.stockManager.stockArr[i], new Date(saleDate.value), Number(saleQuantityArr[i].value), idCount);
           Global.saleManager.add(sale, Global.productManager.productArr);
         }
@@ -70,6 +100,8 @@ import { Purchasing } from '../Models/purchasing.js';
           alert(NO_STOCK);
           return;
         } else if (e instanceof Error) {
+          console.log('e');
+
           alert(NOT_NORMAL_VALUE);
           return;
         }
