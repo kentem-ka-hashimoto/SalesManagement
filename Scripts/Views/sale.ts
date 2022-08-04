@@ -3,7 +3,8 @@ import { Sale } from '../Models/sale.js';
 import { Purchasing } from '../Models/purchasing.js';
 
 {
-  let saleProductName: string = '';
+  let saleProductName: string;
+  let saleQuantity: number;
   // アラートメッセージ
   const NOT_NORMAL_VALUE: string = '値が正常ではありません。もう一度お確かめください。';
   // エラーメッセージ
@@ -40,91 +41,28 @@ import { Purchasing } from '../Models/purchasing.js';
 
   // 決定ボタンの処理
   decisionBtn.addEventListener('click', () => {
+    // 在庫のチェック
     for (let i = 0; i < saleQuantityArr.length; i++) {
-      try {
-        if (checks[i].checked && Number(saleQuantityArr[i].value) <= 0) {
-          throw new Error(ABNORMAL_VALUE_ERROR);
-        }
-      } catch {
-        alert(NOT_NORMAL_VALUE);
-        return;
-      }
-    }
-
-    // for (let i = 0; i < checks.length; i++) {
-    //   let saleProductName: string = Global.stockManager.stockArr[i].product.name;
-    //   try {
-    //     if (checks[i].checked) {
-    //       // マイナスの値が入力されていないかチェック
-    //       if (Number(saleQuantityArr[i].value) <= 0) {
-    //         throw new Error(ABNORMAL_VALUE_ERROR);
-    //       }
-
-    //       // 在庫あるか確認
-    //       let stock: number = 0;
-    //       Global.stockManager.stockArr.forEach((item) => {
-    //         if (item.product.name === saleProductName) {
-    //           stock += item.stock;
-    //         }
-    //       });
-    //       if (stock < Number(saleQuantityArr[i].value)) {
-    //         throw new RangeError(ABNORMAL_VALUE_ERROR);
-    //       }
-
-    //       //在庫を減らす
-    //       let saleQuantity: number = Number(saleQuantityArr[i].value);
-    //       for (let j = 0; j < Global.stockManager.stockArr.length; j++) {
-    //         if (Global.stockManager.stockArr[j].product.name === saleProductName) {
-    //           if (Global.stockManager.stockArr[j].stock >= saleQuantity) {
-    //             Global.stockManager.stockArr[j].stock -= saleQuantity;
-    //             break;
-    //           } else if (Global.stockManager.stockArr[j].stock < saleQuantity) {
-    //             saleQuantity -= Global.stockManager.stockArr[j].stock;
-    //             Global.stockManager.stockArr[j].stock = 0;
-    //           }
-    //         }
-    //       }
-
-    //       // Global.stockManager.stockArr[i].stock -= Number(saleQuantityArr[i].value);
-    //       window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
-    //       // new Sale(Purchasing、販売日、販売数、ID)
-    //       idCount++;
-
-    //       const sale: Sale = new Sale(Global.stockManager.stockArr[i], new Date(saleDate.value), Number(saleQuantityArr[i].value), idCount);
-    //       Global.saleManager.add(sale, Global.productManager.productArr);
-    //     }
-    //   } catch (e) {
-    //     if (e instanceof Error) {
-    //       alert(NOT_NORMAL_VALUE);
-    //       return;
-    //     } else if (e instanceof RangeError) {
-    //       alert(NO_STOCK);
-    //       return;
-    //     }
-    //   }
-    // }
-    for (let i = 0; i < checks.length; i++) {
       saleProductName = Global.stockManager.stockArr[i].product.name;
-      const saleQuantity: number = Number(saleQuantityArr[i].value);
-      try {
-        Global.stockManager.reduceStock(saleProductName, saleQuantity);
-        window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
-        idCount++;
-        const sale: Sale = new Sale(Global.stockManager.stockArr[i], new Date(saleDate.value), Number(saleQuantityArr[i].value), idCount);
-        Global.saleManager.add(sale, Global.productManager.productArr);
-      } catch {
-        const NO_STOCK: string = `${saleProductName}は在庫が足りないので販売できませんでした。`;
-        console.log(saleProductName);
-        console.log(NO_STOCK);
+      saleQuantity = Number(saleQuantityArr[i].value);
+      if (checks[i].checked && !Global.stockManager.checkEnoughStock(saleProductName, saleQuantity)) {
+        const NO_STOCK: string = `${saleProductName}の在庫が足りません。`;
         alert(NO_STOCK);
-        deleteTbodyChildren();
-        createStockList();
-        updateDisabledInput();
-        updateDisabledDecisionBtn();
         return;
       }
     }
 
+    // 販売処理
+    for (let i = 0; i < checks.length; i++) {
+      if (checks[i].checked) {
+        saleProductName = Global.stockManager.stockArr[i].product.name;
+        saleQuantity = Number(saleQuantityArr[i].value);
+        saleProduct(saleProductName, saleQuantity);
+      }
+    }
+
+    // ローカルストレージへの保存
+    window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     localStorage.setItem('idCount', `${idCount}`);
     RedirectMainPage();
@@ -134,6 +72,30 @@ import { Purchasing } from '../Models/purchasing.js';
   returnBtn.addEventListener('click', () => {
     RedirectMainPage();
   });
+
+  // 販売処理
+  function saleProduct(saleProductName: string, saleQuantity: number): void {
+    for (let i = 0; i < Global.stockManager.stockArr.length; i++) {
+      if (Global.stockManager.stockArr[i].product.name === saleProductName) {
+        if (Global.stockManager.stockArr[i].stock >= saleQuantity) {
+          Global.stockManager.stockArr[i].stock -= saleQuantity;
+          createSaleInstance(Global.stockManager.stockArr[i], saleQuantity);
+          break;
+        } else if (Global.stockManager.stockArr[i].stock !== 0 && Global.stockManager.stockArr[i].stock < saleQuantity) {
+          saleQuantity -= Global.stockManager.stockArr[i].stock;
+          createSaleInstance(Global.stockManager.stockArr[i], Global.stockManager.stockArr[i].stock);
+          Global.stockManager.stockArr[i].stock = 0;
+        }
+      }
+    }
+  }
+
+  // Saleのインスタンス作成
+  function createSaleInstance(purchase: Purchasing, quantity: number): void {
+    idCount++;
+    const sale: Sale = new Sale(purchase, new Date(saleDate.value), quantity, idCount);
+    Global.saleManager.add(sale, Global.productManager.productArr);
+  }
 
   // 一覧の表示
   function createStockList(): void {
@@ -148,6 +110,7 @@ import { Purchasing } from '../Models/purchasing.js';
       // 入力部分の有効無効判定
       checkBox.addEventListener('change', () => {
         updateDisabledInput();
+        updateDisabledCheckBox();
       });
 
       tdCheck.appendChild(checkBox);
@@ -161,6 +124,14 @@ import { Purchasing } from '../Models/purchasing.js';
       const tdTextBox: HTMLInputElement = document.createElement('input');
       tdTextBox.type = 'number';
       tdTextBox.name = 'saleQuantity';
+
+      // 負の値の判定
+      tdTextBox.addEventListener('input', () => {
+        if (Number(tdTextBox.value) <= 0) {
+          alert(NOT_NORMAL_VALUE);
+          tdTextBox.value = '';
+        }
+      });
       tdQuantity.appendChild(tdTextBox);
 
       tr.appendChild(tdCheck);
@@ -195,11 +166,23 @@ import { Purchasing } from '../Models/purchasing.js';
     decisionBtn.disabled = checkCount >= 1 || saleDate.value === '';
   }
 
-  // tbody内の削除
-  function deleteTbodyChildren(): void {
-    while (tbody?.firstChild) {
-      tbody.removeChild(tbody.firstChild);
-    }
+  // チェックボックスの有効無効
+  function updateDisabledCheckBox(): void {
+    checks.forEach((check) => {
+      check.disabled = false;
+    });
+    checks.forEach((check, checkIndex) => {
+      if (check.checked) {
+        checks.forEach((item, itemIndex) => {
+          if (
+            checkIndex !== itemIndex &&
+            Global.stockManager.stockArr[checkIndex].product.name === Global.stockManager.stockArr[itemIndex].product.name
+          ) {
+            item.disabled = true;
+          }
+        });
+      }
+    });
   }
 
   // メイン画面遷移
