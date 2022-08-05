@@ -39,6 +39,14 @@ export class StockManager {
     return saleQuantity <= stock;
   }
 
+  public remove(): void {
+    for (let i = this._stockArr.length - 1; i >= 0; i--) {
+      if (this._stockArr[i].stock === 0) {
+        this._stockArr.splice(i, 1);
+      }
+    }
+  }
+
   private separateByProduct(purchases: Purchasing[], products: Product[]): Purchasing[] {
     let purchaseArr: Purchasing[] = [];
     for (let i = 0; i < products.length; i++) {

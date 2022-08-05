@@ -76,6 +76,32 @@ describe('StockManagerTest', () => {
     expect(manager.stockArr[1].stock).toBe(200);
   });
 
+  test('removeTest', () => {
+    let manager = new StockManager();
+    let purchasing: Purchasing = new Purchasing(new Product('桃'), new Date('2022-07-20'), 200, 400, 200);
+    const productArr: Product[] = [new Product('桃')];
+    
+    // 2022-07-20入荷の桃の在庫２００個
+    manager.add(purchasing, productArr);
+    
+    // 2022-07-21入荷の桃の在庫3００個
+    purchasing = new Purchasing(new Product('桃'), new Date('2022-07-21'), 300, 500, 300);
+    manager.add(purchasing, productArr);
+    
+    // 在庫が０でない場合削除されない確認
+    manager.remove();
+    expect(manager.stockArr.length).toBe(2);
+    
+    // 桃の在庫を300個減らす
+    manager.reduceStock('桃', 300);
+    
+    // 2022-07-20入荷の桃の在庫が0になるので削除されていること確認
+    manager.remove();
+    expect(manager.stockArr.length).toBe(1);
+    let date: Date = new Date('2022-07-21');
+    expect(manager.stockArr[0].purchaseDate).toEqual(date);
+  });
+
   test('checkEnoughStockErrorTest', () => {
     let manager = new StockManager();
     let date: Date = new Date('2022-07-20');
