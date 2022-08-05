@@ -3,13 +3,8 @@ import { Sale } from '../Models/sale.js';
 import { Purchasing } from '../Models/purchasing.js';
 
 {
-  let saleProductName: string;
-  let saleQuantity: number;
   // アラートメッセージ
   const NOT_NORMAL_VALUE: string = '値が正常ではありません。もう一度お確かめください。';
-  // エラーメッセージ
-  const ABNORMAL_VALUE_ERROR: string = 'The value is abnormal';
-
   // tbodyの取得
   const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
   // 販売日の取得
@@ -24,6 +19,10 @@ import { Purchasing } from '../Models/purchasing.js';
   let saleQuantityArr: NodeListOf<HTMLInputElement>;
   // 配列末尾のidを取得
   let idCount: number = Number(localStorage.getItem('idCount'));
+  // 販売する商品名
+  let saleProductName: string;
+  // 販売する商品の個数
+  let saleQuantity: number;
 
   // 画面ロード時の処理
   window.onload = function () {
@@ -77,14 +76,16 @@ import { Purchasing } from '../Models/purchasing.js';
   // 販売処理
   function saleProduct(saleProductName: string, saleQuantity: number): void {
     for (let i = 0; i < Global.stockManager.stockArr.length; i++) {
-      if (Global.stockManager.stockArr[i].product.name === saleProductName) {
-        if (Global.stockManager.stockArr[i].stock >= saleQuantity) {
+      const productName: string = Global.stockManager.stockArr[i].product.name;
+      const stock: number = Global.stockManager.stockArr[i].stock;
+      if (productName === saleProductName) {
+        if (stock >= saleQuantity) {
           Global.stockManager.stockArr[i].stock -= saleQuantity;
           createSaleInstance(Global.stockManager.stockArr[i], saleQuantity);
           break;
-        } else if (Global.stockManager.stockArr[i].stock !== 0 && Global.stockManager.stockArr[i].stock < saleQuantity) {
-          saleQuantity -= Global.stockManager.stockArr[i].stock;
-          createSaleInstance(Global.stockManager.stockArr[i], Global.stockManager.stockArr[i].stock);
+        } else if (stock !== 0 && stock < saleQuantity) {
+          saleQuantity -= stock;
+          createSaleInstance(Global.stockManager.stockArr[i], stock);
           Global.stockManager.stockArr[i].stock = 0;
         }
       }
