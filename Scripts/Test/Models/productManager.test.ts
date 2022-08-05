@@ -48,10 +48,10 @@ describe('ProductManager', () => {
     product = new Product('アイス');
     manager.add(product);
 
-    // 2つ追加されていることの確認
+    // 3つ追加されていることの確認
     expect(manager.productArr.length).toBe(3);
 
-    // 1つ目削除
+    // 2つ目削除
     manager.delete(1);
     expect(manager.productArr.length).toBe(2);
 

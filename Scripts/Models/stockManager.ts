@@ -2,7 +2,6 @@ import { Purchasing } from './purchasing.js';
 import { Product } from './product.js';
 
 export class StockManager {
-  private readonly ABNORMAL_VALUE_ERROR: string = 'The value is abnormal';
   private _stockArr: Purchasing[] = [];
 
   public get stockArr(): Purchasing[] {
