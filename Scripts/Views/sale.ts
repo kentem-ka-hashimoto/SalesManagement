@@ -116,6 +116,8 @@ import { Purchasing } from '../Models/purchasing.js';
       tdCheck.appendChild(checkBox);
       const tdName: HTMLTableCellElement = document.createElement('td');
       tdName.textContent = target.product.name;
+      const tdSalePrise: HTMLTableCellElement = document.createElement('td');
+      tdSalePrise.textContent = `${target.sellingPrice}円`;
       const tdStock: HTMLTableCellElement = document.createElement('td');
       tdStock.textContent = `${target.stock}個`;
 
@@ -136,6 +138,7 @@ import { Purchasing } from '../Models/purchasing.js';
 
       tr.appendChild(tdCheck);
       tr.appendChild(tdName);
+      tr.appendChild(tdSalePrise);
       tr.appendChild(tdStock);
       tr.appendChild(tdQuantity);
       tbody?.appendChild(tr);
