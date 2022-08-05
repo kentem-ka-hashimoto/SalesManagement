@@ -62,6 +62,7 @@ import { Purchasing } from '../Models/purchasing.js';
     }
 
     // ローカルストレージへの保存
+    Global.stockManager.remove();
     window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     localStorage.setItem('idCount', `${idCount}`);
