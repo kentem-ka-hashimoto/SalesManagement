@@ -37,12 +37,10 @@ export class SalesManager {
   private separateByProduct(saleArr: Sale[], products: Product[]): Sale[] {
     let sales: Sale[] = [];
     for (let i = 0; i < products.length; i++) {
-      for (let j = 0; j < saleArr.length; j++) {
-        if (products[i].name === saleArr[j].purchasing.product.name) {
-          sales.push(saleArr[j]);
-        }
-      }
+      const result = this._salesArr.filter((sale) => sale.purchasing.product.name === products[i].name);
+      sales = sales.concat(result);
     }
+
     return sales;
   }
 
