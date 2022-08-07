@@ -11,21 +11,7 @@ export class StockManager {
   public add(purchase: Purchasing, products: Product[]): void {
     this._stockArr.push(purchase);
     this.sortAscendingOrder();
-    this._stockArr = this.separateByProduct(this._stockArr, products);
-  }
-
-  public reduceStock(saleProductName: string, saleQuantity: number): void {
-    for (let i = 0; i < this._stockArr.length; i++) {
-      if (this._stockArr[i].product.name === saleProductName) {
-        if (this._stockArr[i].stock >= saleQuantity) {
-          this._stockArr[i].stock -= saleQuantity;
-          break;
-        } else if (this._stockArr[i].stock < saleQuantity) {
-          saleQuantity -= this._stockArr[i].stock;
-          this._stockArr[i].stock = 0;
-        }
-      }
-    }
+    this._stockArr = this.separateByProduct(products);
   }
 
   public checkEnoughStock(saleProductName: string, saleQuantity: number): boolean {
@@ -38,7 +24,7 @@ export class StockManager {
     return saleQuantity <= stock;
   }
 
-  public remove(): void {
+  public removeNothingStock(): void {
     for (let i = this._stockArr.length - 1; i >= 0; i--) {
       if (this._stockArr[i].stock === 0) {
         this._stockArr.splice(i, 1);
@@ -46,15 +32,13 @@ export class StockManager {
     }
   }
 
-  private separateByProduct(purchases: Purchasing[], products: Product[]): Purchasing[] {
+  private separateByProduct(products: Product[]): Purchasing[] {
     let purchaseArr: Purchasing[] = [];
     for (let i = 0; i < products.length; i++) {
-      for (let j = 0; j < purchases.length; j++) {
-        if (products[i].name === purchases[j].product.name) {
-          purchaseArr.push(purchases[j]);
-        }
-      }
+      const result = this._stockArr.filter((stock) => stock.product.name === products[i].name);
+      purchaseArr = purchaseArr.concat(result);
     }
+
     return purchaseArr;
   }
 
