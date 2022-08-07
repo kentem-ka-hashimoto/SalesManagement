@@ -61,7 +61,7 @@ import { Purchasing } from '../Models/purchasing.js';
     }
 
     // ローカルストレージへの保存
-    Global.stockManager.remove();
+    Global.stockManager.removeNothingStock();
     window.localStorage.setItem('stock', JSON.stringify(Global.stockManager.stockArr));
     window.localStorage.setItem('sale', JSON.stringify(Global.saleManager.salesArr));
     localStorage.setItem('idCount', `${idCount}`);
@@ -75,18 +75,18 @@ import { Purchasing } from '../Models/purchasing.js';
 
   // 販売処理
   function saleProduct(saleProductName: string, saleQuantity: number): void {
-    for (let i = 0; i < Global.stockManager.stockArr.length; i++) {
-      const productName: string = Global.stockManager.stockArr[i].product.name;
-      const stock: number = Global.stockManager.stockArr[i].stock;
-      if (productName === saleProductName) {
-        if (stock >= saleQuantity) {
-          Global.stockManager.stockArr[i].stock -= saleQuantity;
-          createSaleInstance(Global.stockManager.stockArr[i], saleQuantity);
+    const stockArr = Global.stockManager.stockArr;
+    for (let i = 0; i < stockArr.length; i++) {
+      const purchase = stockArr[i];
+      if (purchase.product.name === saleProductName) {
+        if (saleQuantity <= purchase.stock) {
+          purchase.stock -= saleQuantity;
+          createSaleInstance(purchase, saleQuantity);
           break;
-        } else if (stock !== 0 && stock < saleQuantity) {
-          saleQuantity -= stock;
-          createSaleInstance(Global.stockManager.stockArr[i], stock);
-          Global.stockManager.stockArr[i].stock = 0;
+        } else {
+          saleQuantity -= purchase.stock;
+          createSaleInstance(purchase, purchase.stock);
+          purchase.stock = 0;
         }
       }
     }
@@ -176,14 +176,13 @@ import { Purchasing } from '../Models/purchasing.js';
     checks.forEach((check) => {
       check.disabled = false;
     });
+
     checks.forEach((check, checkIndex) => {
       if (check.checked) {
-        checks.forEach((item, itemIndex) => {
-          if (
-            checkIndex !== itemIndex &&
-            Global.stockManager.stockArr[checkIndex].product.name === Global.stockManager.stockArr[itemIndex].product.name
-          ) {
-            item.disabled = true;
+        const name: string = Global.stockManager.stockArr[checkIndex].product.name;
+        Global.stockManager.stockArr.forEach((item, index) => {
+          if (checkIndex !== index && name === item.product.name) {
+            checks[index].disabled = true;
           }
         });
       }
