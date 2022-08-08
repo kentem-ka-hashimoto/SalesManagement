@@ -59,6 +59,35 @@ describe('SalesManagerTest', () => {
     expect(manager.salesArr[0].saleDate).toEqual(saleDate);
     expect(manager.salesArr[0].saleQuantity).toBe(300);
     expect(manager.salesArr[0].id).toBe(3);
+
+    // 4つ目追加した際の確認(１つ目と同じ名前、１つ目よりも仕入日が新しい商品を追加)
+
+    purchaseDate = new Date('2022-07-22');
+    sale = new Sale(new Purchasing(new Product('桃'), new Date('2022-07-22'), 400, 600, 400), new Date('2022-07-28'), 400, 4);
+    manager.add(sale, productArr);
+    expect(manager.salesArr.length).toBe(4);
+    expect(manager.salesArr[2].purchasing.product.name).toBe('桃');
+    expect(manager.salesArr[2].purchasing.purchaseDate).toEqual(purchaseDate);
+    expect(manager.salesArr[2].purchasing.purchasePrice).toBe(400);
+    expect(manager.salesArr[2].purchasing.sellingPrice).toBe(600);
+    expect(manager.salesArr[2].purchasing.stock).toBe(400);
+    expect(manager.salesArr[2].saleDate).toEqual(saleDate);
+    expect(manager.salesArr[2].saleQuantity).toBe(400);
+    expect(manager.salesArr[2].id).toBe(4);
+
+    // 5つ目追加した際の確認(2つ目と同じ名前、2つ目よりも仕入日が古い商品を追加)
+    purchaseDate = new Date('2022-07-18');
+    sale = new Sale(new Purchasing(new Product('お茶'), new Date('2022-07-18'), 400, 600, 400), new Date('2022-07-28'), 400, 5);
+    manager.add(sale, productArr);
+    expect(manager.salesArr.length).toBe(5);
+    expect(manager.salesArr[3].purchasing.product.name).toBe('お茶');
+    expect(manager.salesArr[3].purchasing.purchaseDate).toEqual(purchaseDate);
+    expect(manager.salesArr[3].purchasing.purchasePrice).toBe(400);
+    expect(manager.salesArr[3].purchasing.sellingPrice).toBe(600);
+    expect(manager.salesArr[3].purchasing.stock).toBe(400);
+    expect(manager.salesArr[3].saleDate).toEqual(saleDate);
+    expect(manager.salesArr[3].saleQuantity).toBe(400);
+    expect(manager.salesArr[3].id).toBe(5);
   });
 
   test('getTotalSalesTest', () => {
