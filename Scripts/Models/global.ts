@@ -31,47 +31,6 @@ export class Global {
     return this._productManager;
   }
 
-  public static getStockFromLocalStorage(): void {
-    const items: string | null = localStorage.getItem('stock');
-    if (items) {
-      const stock: string[] = JSON.parse(items);
-      stock.forEach((target: any) => {
-        const purchasing: Purchasing = new Purchasing(
-          new Product(target._product._name),
-          target._purchaseDate,
-          target._purchasePrice,
-          target._sellingPrice,
-          target._stock
-        );
-        Global.stockManager.add(purchasing);
-      });
-    }
-  }
-
-  public static getSalesStatusFromLocalStorage(): void {
-    const items: string | null = localStorage.getItem('sale');
-    if (items) {
-      const salesStatus: string[] = JSON.parse(items);
-      let idCount: number = 0;
-      salesStatus.forEach((target: any) => {
-        idCount++;
-        const saleData: Sale = new Sale(
-          new Purchasing(
-            new Product(target._purchasing._product._name),
-            target._purchasing._purchaseDate,
-            target._purchasing._purchasePrice,
-            target._purchasing._sellingPrice,
-            target._purchasing._stock
-          ),
-          target._saleDate,
-          target._saleQuantity,
-          idCount
-        );
-        Global.saleManager.add(saleData);
-      });
-    }
-  }
-
   public static getProductManagerFromLocalStorage(): void {
     const items: string | null = localStorage.getItem('product');
     if (items) {
@@ -81,5 +40,52 @@ export class Global {
         Global.productManager.add(product);
       });
     }
+  }
+
+  public static getStockFromLocalStorage(): void {
+    const items: string | null = localStorage.getItem('stock');
+    if (items) {
+      const stock: string[] = JSON.parse(items);
+      stock.forEach((target: any) => {
+        const purchasing: Purchasing = new Purchasing(
+          new Product(target._product._name),
+          new Date(target._purchaseDate),
+          target._purchasePrice,
+          target._sellingPrice,
+          target._stock
+        );
+        Global.stockManager.add(purchasing, this._productManager.productArr);
+      });
+    }
+  }
+
+  public static getSalesStatusFromLocalStorage(): void {
+    this.getProductManagerFromLocalStorage();
+    const items: string | null = localStorage.getItem('sale');
+    if (items) {
+      const salesStatus: string[] = JSON.parse(items);
+      let idCount: number = 0;
+      salesStatus.forEach((target: any) => {
+        idCount++;
+        const saleData: Sale = new Sale(
+          new Purchasing(
+            new Product(target._purchasing._product._name),
+            new Date(target._purchasing._purchaseDate),
+            target._purchasing._purchasePrice,
+            target._purchasing._sellingPrice,
+            target._purchasing._stock
+          ),
+          new Date(target._saleDate),
+          target._saleQuantity,
+          idCount
+        );
+        Global.saleManager.add(saleData, this._productManager.productArr);
+      });
+    }
+  }
+
+  public static convertDateToString(date: Date): string {
+    // ●●●●-●●-●●の形にする
+    return date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice(-2)}` + '-' + `${('00' + date.getDate()).slice(-2)}`;
   }
 }

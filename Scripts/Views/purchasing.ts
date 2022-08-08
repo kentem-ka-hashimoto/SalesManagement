@@ -20,6 +20,7 @@ import { Global } from '../Models/global.js';
   const sellingPrice = document.getElementById('sellingPrice') as HTMLInputElement;
   // 仕入日の取得
   const purchaseDate = document.getElementById('purchaseDate') as HTMLInputElement;
+  purchaseDate.value = Global.convertDateToString(new Date());
   // 決定ボタンの取得
   const decisionBtn = document.getElementById('decision') as HTMLButtonElement;
   // 戻るボタンの取得
@@ -27,8 +28,8 @@ import { Global } from '../Models/global.js';
 
   // 画面ロード時の処理
   window.onload = function () {
-    Global.getStockFromLocalStorage();
     Global.getProductManagerFromLocalStorage();
+    Global.getStockFromLocalStorage();
     createcomboBox();
     // 選択肢の取得
     choice = document.querySelectorAll('option');
@@ -50,12 +51,12 @@ import { Global } from '../Models/global.js';
       // new Purchasing(商品、仕入日、仕入価格、販売価格、仕入数)
       const purchasing: Purchasing = new Purchasing(
         product,
-        purchaseDate.value,
+        new Date(purchaseDate.value),
         Number(purchasePrice.value),
         Number(sellingPrice.value),
         Number(purchaseQuantity.value)
       );
-      Global.stockManager.add(purchasing);
+      Global.stockManager.add(purchasing, Global.productManager.productArr);
     } catch {
       alert(NOT_NORMAL_VALUE);
       return;

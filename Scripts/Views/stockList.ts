@@ -1,6 +1,6 @@
-import { Product } from '../Models/product.js';
 import { Global } from '../Models/global.js';
 import { Purchasing } from '../Models/purchasing.js';
+import { Sale } from '../Models/sale.js';
 
 // tbodyの取得
 const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
@@ -9,6 +9,7 @@ const closeBtn = document.getElementById('close') as HTMLButtonElement;
 
 // 画面ロード時の処理
 window.onload = function () {
+  Global.getProductManagerFromLocalStorage();
   Global.getStockFromLocalStorage();
   createStockList();
 };
@@ -33,7 +34,7 @@ function createStockList(): void {
     const tdName: HTMLTableCellElement = document.createElement('td');
     tdName.textContent = target.product.name;
     const tdPurchaseDate: HTMLTableCellElement = document.createElement('td');
-    tdPurchaseDate.textContent = target.purchaseDate;
+    tdPurchaseDate.textContent = target.convertDateToString();
     const tdPurchasePrice: HTMLTableCellElement = document.createElement('td');
     tdPurchasePrice.textContent = `${target.purchasePrice}円`;
     const tdSellingPrice: HTMLTableCellElement = document.createElement('td');

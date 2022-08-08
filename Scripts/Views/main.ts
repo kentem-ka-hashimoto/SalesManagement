@@ -1,6 +1,5 @@
 import { Global } from '../Models/global.js';
 import { Sale } from '../Models/sale.js';
-import { SalesManager } from '../Models/salesManager.js';
 
 // tbodyの取得
 const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
@@ -55,7 +54,7 @@ narrowingBtn.addEventListener('click', () => {
 
 // 今日の販売ボタンの処理
 todaySaleBtn.addEventListener('click', () => {
-  salesArr = salesArr.filter((sale, index) => salesArr[index].saleDate === today);
+  salesArr = salesArr.filter((sale) => sale.convertDateToString() === today);
   displayUpdate();
 });
 
@@ -117,9 +116,9 @@ function createSalesStatusList(): void {
     const tdPurchasePrice: HTMLTableCellElement = document.createElement('td');
     tdPurchasePrice.textContent = `${item.purchasing.purchasePrice.toLocaleString()}円`;
     const tdPurchaseDate: HTMLTableCellElement = document.createElement('td');
-    tdPurchaseDate.textContent = item.purchasing.purchaseDate;
+    tdPurchaseDate.textContent = item.purchasing.convertDateToString();
     const tdSalesDate: HTMLTableCellElement = document.createElement('td');
-    tdSalesDate.textContent = item.saleDate;
+    tdSalesDate.textContent = item.convertDateToString();
     const tdQuantity: HTMLTableCellElement = document.createElement('td');
     tdQuantity.textContent = `${item.saleQuantity.toLocaleString()}個`;
     const tdEarnings: HTMLTableCellElement = document.createElement('td');

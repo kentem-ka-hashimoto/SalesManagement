@@ -27,6 +27,18 @@ describe('ProductManager', () => {
     expect(manager.productArr[1].name).toBe('お茶');
   });
 
+  test('addErrorTest', () => {
+    let manager = new ProductManager();
+    let product: Product = new Product('桃');
+
+    // 桃を追加した際の確認
+    manager.add(product);
+    expect(manager.productArr[0].name).toBe('桃');
+
+    // 同じ商品名は追加できない確認
+    expect(() => manager.add(product)).toThrowError('This product is already registered');
+  });
+
   test('deleteTest', () => {
     let manager = new ProductManager();
     let product: Product = new Product('桃');
@@ -36,10 +48,10 @@ describe('ProductManager', () => {
     product = new Product('アイス');
     manager.add(product);
 
-    // 2つ追加されていることの確認
+    // 3つ追加されていることの確認
     expect(manager.productArr.length).toBe(3);
 
-    // 1つ目削除
+    // 2つ目削除
     manager.delete(1);
     expect(manager.productArr.length).toBe(2);
 
