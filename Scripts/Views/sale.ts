@@ -9,6 +9,7 @@ import { Purchasing } from '../Models/purchasing.js';
   const tbody: HTMLTableSectionElement | null = document.querySelector('tbody');
   // 販売日の取得
   const saleDate = document.getElementById('seleDate') as HTMLInputElement;
+  saleDate.value = Global.convertDateToString(new Date());
   // 決定ボタンの取得
   const decisionBtn = document.getElementById('decision') as HTMLButtonElement;
   // 戻るボタンの取得

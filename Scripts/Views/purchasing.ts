@@ -20,6 +20,7 @@ import { Global } from '../Models/global.js';
   const sellingPrice = document.getElementById('sellingPrice') as HTMLInputElement;
   // 仕入日の取得
   const purchaseDate = document.getElementById('purchaseDate') as HTMLInputElement;
+  purchaseDate.value = Global.convertDateToString(new Date());
   // 決定ボタンの取得
   const decisionBtn = document.getElementById('decision') as HTMLButtonElement;
   // 戻るボタンの取得

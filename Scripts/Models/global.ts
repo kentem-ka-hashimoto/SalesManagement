@@ -83,4 +83,9 @@ export class Global {
       });
     }
   }
+
+  public static convertDateToString(date: Date): string {
+    // ●●●●-●●-●●の形にする
+    return date.getFullYear() + '-' + `${('00' + (date.getMonth() + 1)).slice(-2)}` + '-' + `${('00' + date.getDate()).slice(-2)}`;
+  }
 }
