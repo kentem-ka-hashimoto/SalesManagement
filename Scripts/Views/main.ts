@@ -179,3 +179,5 @@ function transitionPage(link: string): void {
   setCheckStatusToLocalStorage();
   window.location.href = link;
 }
+
+// GitHub移行用テストコメント
